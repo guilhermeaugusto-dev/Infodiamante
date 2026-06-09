@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TipoUsuario {
+  USUARIO
+  GUIA
+  ADMIN
+}
+
+enum StatusRoteiro {
+  RASCUNHO
+  ATIVO
+  FINALIZADO
+  CANCELADO
+}
+
+enum StatusAgendamento {
+  PENDENTE
+  CONFIRMADO
+  CANCELADO
+  FINALIZADO
+}
+
+model Usuario {
+  id        Int         @id @default(autoincrement())
+  nome      String
+  email     String      @unique
+  senha     String
+  telefone  String?
+  fotoUrl   String?
+  tipo      TipoUsuario @default(USUARIO)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  guia            Guia?
+  roteiros        Roteiro[]
+  avaliacoes      Avaliacao[]
+  favoritos       Favorito[]
+  agendamentos    AgendamentoGuia[]
+
+  @@map("usuarios")
+}
+
+model Categoria {
+  id        Int     @id @default(autoincrement())
+  nome      String  @unique
+  descricao String?
+  cor       String?
+
+  pontosTuristicos PontoTuristico[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("categorias")
+}
+
+model Regiao {
+  id        Int     @id @default(autoincrement())
+  nome      String  @unique
+  descricao String?
+
+  pontosTuristicos PontoTuristico[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("regioes")
+}
+
+model PontoTuristico {
+  id        Int     @id @default(autoincrement())
+  nome      String
+  descricao String  @db.Text
+  endereco  String?
+  cidade    String
+  estado    String
+  latitude  Decimal? @db.Decimal(10, 8)
+  longitude Decimal? @db.Decimal(11, 8)
+  imagemUrl String?
+  ativo     Boolean @default(true)
+
+  categoriaId Int
+  regiaoId    Int?
+
+  categoria Categoria @relation(fields: [categoriaId], references: [id])
+  regiao    Regiao?   @relation(fields: [regiaoId], references: [id])
+
+  avaliacoes      Avaliacao[]
+  favoritos       Favorito[]
+  pontosDoRoteiro PontoDoRoteiro[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("pontos_turisticos")
+}
+
+model Guia {
+  id              Int      @id @default(autoincrement())
+  usuarioId       Int      @unique
+  biografia       String?  @db.Text
+  especialidade   String
+  idiomas         String?
+  precoPorHora    Decimal? @db.Decimal(10, 2)
+  anosExperiencia Int?
+  verificado      Boolean  @default(false)
+  disponivel      Boolean  @default(true)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  agendamentos AgendamentoGuia[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("guias")
+}
+
+model AgendamentoGuia {
+  id          Int               @id @default(autoincrement())
+  usuarioId   Int
+  guiaId      Int
+  data        DateTime
+  horas       Int
+  observacoes String?           @db.Text
+  valorTotal  Decimal?          @db.Decimal(10, 2)
+  status      StatusAgendamento @default(PENDENTE)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  guia    Guia    @relation(fields: [guiaId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("agendamentos_guias")
+}
+
+model Roteiro {
+  id                Int           @id @default(autoincrement())
+  usuarioId          Int
+  titulo             String
+  descricao          String?       @db.Text
+  dataInicio         DateTime?
+  dataFim            DateTime?
+  quantidadePessoas  Int           @default(1)
+  orcamento          Decimal?      @db.Decimal(10, 2)
+  status             StatusRoteiro @default(RASCUNHO)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  pontos PontoDoRoteiro[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("roteiros")
+}
+
+model PontoDoRoteiro {
+  id               Int      @id @default(autoincrement())
+  roteiroId         Int
+  pontoTuristicoId  Int
+  ordemVisita       Int
+  dataVisita        DateTime?
+  observacoes       String?  @db.Text
+
+  roteiro        Roteiro        @relation(fields: [roteiroId], references: [id])
+  pontoTuristico PontoTuristico @relation(fields: [pontoTuristicoId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@unique([roteiroId, pontoTuristicoId])
+  @@map("pontos_do_roteiro")
+}
+
+model Avaliacao {
+  id               Int    @id @default(autoincrement())
+  usuarioId         Int
+  pontoTuristicoId  Int
+  nota              Int
+  comentario        String @db.Text
+
+  usuario        Usuario        @relation(fields: [usuarioId], references: [id])
+  pontoTuristico PontoTuristico @relation(fields: [pontoTuristicoId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@unique([usuarioId, pontoTuristicoId])
+  @@map("avaliacoes")
+}
+
+model Favorito {
+  id               Int @id @default(autoincrement())
+  usuarioId         Int
+  pontoTuristicoId  Int
+
+  usuario        Usuario        @relation(fields: [usuarioId], references: [id])
+  pontoTuristico PontoTuristico @relation(fields: [pontoTuristicoId], references: [id])
+
+  criadoEm DateTime @default(now())
+
+  @@unique([usuarioId, pontoTuristicoId])
+  @@map("favoritos")
+}

@@ -1,0 +1,9 @@
+export { default as google } from './google.png';
+export { default as facebook } from './facebook.png';
+export { default as usuario } from './usuario.png';
+export { default as tranca } from './trancar.png';
+export { default as olho } from './olho.png';
+export { default as olhoSemTranca } from './olho-sem-tranca.png';
+export { default as guia } from './guia-turistico.png';
+export { default as mapa } from './mapa-principal.png';
+export { default as carrinho } from './carrinho-de-compras.png';

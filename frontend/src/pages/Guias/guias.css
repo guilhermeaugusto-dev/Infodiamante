@@ -1,0 +1,422 @@
+:root {
+  --vinho: #8a0033;
+  --vinho-escuro: #650026;
+  --amarelo: #f5b400;
+  --azul: #69bdf2;
+  --azul-claro: #eaf7ff;
+  --branco: #ffffff;
+  --texto: #181818;
+  --cinza: #606060;
+  --borda: #dddddd;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.guias-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.guias-container {
+  width: 85%;
+  max-width: 1450px;
+  margin: 0 auto 36px;
+}
+
+/* HERO */
+
+.guias-hero {
+  min-height: 170px;
+  margin-top: 22px;
+  margin-bottom: 22px;
+  padding: 28px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.guias-hero h1 {
+  color: var(--vinho);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.guias-hero p {
+  max-width: 520px;
+  color: #222;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.guias-decoration {
+  flex: 1;
+  min-height: 120px;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 26px;
+}
+
+.guias-decoration span {
+  color: var(--vinho);
+  font-size: 36px;
+  opacity: 0.75;
+}
+
+.guias-line {
+  width: 280px;
+  height: 52px;
+  border-top: 3px dashed rgba(138, 0, 51, 0.35);
+  border-radius: 50%;
+  transform: rotate(8deg);
+}
+
+.guia-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(138, 0, 51, 0.08);
+  color: var(--vinho);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 34px;
+}
+
+/* FILTROS */
+
+.guias-search-card {
+  width: 100%;
+  min-height: 84px;
+  margin-bottom: 26px;
+  padding: 20px;
+
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px rgba(138, 0, 51, 0.08);
+
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr 130px;
+  gap: 16px;
+  align-items: center;
+}
+
+.guia-search-input {
+  height: 50px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: white;
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.guia-search-input span {
+  font-size: 19px;
+  color: #777;
+}
+
+.guia-search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  color: var(--texto);
+  font-size: 14px;
+  background: transparent;
+}
+
+.guia-filter-box {
+  height: 50px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: white;
+  padding: 7px 13px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.guia-filter-box label {
+  color: #333;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.guia-filter-box select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guia-search-button {
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  background: var(--vinho);
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(138, 0, 51, 0.22);
+  transition: 0.2s ease;
+}
+
+.guia-search-button:hover {
+  background: var(--vinho-escuro);
+  transform: translateY(-2px);
+}
+
+/* CARDS */
+
+.guias-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.guia-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(138, 0, 51, 0.09);
+  transition: 0.25s ease;
+}
+
+.guia-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(138, 0, 51, 0.16);
+}
+
+.guia-image {
+  height: 210px;
+  position: relative;
+  overflow: hidden;
+}
+
+.guia-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.guia-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 50%;
+  background: white;
+  color: var(--vinho);
+
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.guia-content {
+  padding: 16px 18px 18px;
+}
+
+.guia-content h2 {
+  color: var(--vinho);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  margin-bottom: 6px;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.guia-content h2 span {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: white;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.guia-content strong {
+  display: block;
+  color: var(--vinho);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.guia-content p {
+  color: #555;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.guia-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.guia-rating span {
+  color: var(--amarelo);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.guia-rating small {
+  color: #555;
+  font-size: 12px;
+}
+
+.guia-card-button {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--vinho);
+  border-radius: 8px;
+  background: white;
+  color: var(--vinho);
+
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.guia-card-button:hover {
+  background: var(--vinho);
+  color: white;
+}
+
+/* BOTÃO FINAL */
+
+.ver-mais-area {
+  margin: 30px 0 12px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.ver-mais-area button {
+  height: 44px;
+  padding: 0 70px;
+
+  border: 1px solid var(--vinho);
+  border-radius: 8px;
+  background: white;
+  color: var(--vinho);
+
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ver-mais-area button:hover {
+  background: var(--vinho);
+  color: white;
+}
+
+/* FOOTER NO FINAL */
+
+.guias-page > .footer {
+  margin-top: auto;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1200px) {
+  .guias-container {
+    width: 94%;
+  }
+
+  .guias-search-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .guia-search-button {
+    grid-column: span 2;
+  }
+
+  .guias-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .guias-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .guias-decoration {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .guias-hero h1 {
+    font-size: 38px;
+  }
+
+  .guias-hero p {
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .guias-decoration {
+    display: none;
+  }
+
+  .guias-search-card {
+    grid-template-columns: 1fr;
+  }
+
+  .guia-search-button {
+    grid-column: span 1;
+  }
+
+  .guias-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ver-mais-area button {
+    width: 100%;
+    padding: 0;
+  }
+}

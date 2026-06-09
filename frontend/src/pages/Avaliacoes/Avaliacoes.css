@@ -1,0 +1,441 @@
+:root {
+  --vinho: #8a0033;
+  --vinho-escuro: #650026;
+  --amarelo: #f5b400;
+  --azul: #69bdf2;
+  --azul-claro: #eaf7ff;
+  --branco: #ffffff;
+  --texto: #181818;
+  --cinza: #606060;
+  --borda: #dddddd;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.avaliacoes-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.avaliacoes-container {
+  width: 85%;
+  max-width: 1450px;
+  margin: 0 auto 36px;
+}
+
+/* HERO */
+
+.avaliacoes-hero {
+  margin-top: 22px;
+  margin-bottom: 26px;
+
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr;
+  align-items: center;
+  gap: 36px;
+}
+
+.avaliacoes-hero h1 {
+  color: var(--vinho);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.avaliacoes-hero p {
+  max-width: 430px;
+  color: #222;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+/* RESUMO DE AVALIAÇÕES */
+
+.rating-summary {
+  min-height: 150px;
+  padding: 28px 34px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px rgba(138, 0, 51, 0.08);
+
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.rating-number {
+  text-align: center;
+  border-right: 1px solid #eeeeee;
+  padding-right: 32px;
+}
+
+.rating-number span {
+  display: block;
+  font-size: 38px;
+  margin-bottom: 6px;
+}
+
+.rating-number strong {
+  display: block;
+  color: #111;
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.rating-number p {
+  color: #111;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.rating-number small {
+  color: #666;
+  font-size: 12px;
+}
+
+.rating-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #555;
+}
+
+.bar {
+  height: 8px;
+  background: #eeeeee;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--amarelo);
+  border-radius: 999px;
+}
+
+.fill-5 {
+  width: 88%;
+}
+
+.fill-4 {
+  width: 58%;
+}
+
+.fill-3 {
+  width: 24%;
+}
+
+.fill-2 {
+  width: 9%;
+}
+
+.fill-1 {
+  width: 6%;
+}
+
+/* FILTROS */
+
+.avaliacoes-filter-card {
+  width: 100%;
+  min-height: 84px;
+  margin-bottom: 26px;
+  padding: 20px;
+
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px rgba(138, 0, 51, 0.08);
+
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 130px;
+  gap: 16px;
+  align-items: center;
+}
+
+.avaliacoes-search {
+  height: 50px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: white;
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avaliacoes-search span {
+  color: #777;
+  font-size: 19px;
+}
+
+.avaliacoes-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto);
+  font-size: 14px;
+}
+
+.avaliacoes-filter-box {
+  height: 50px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: white;
+  padding: 7px 13px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.avaliacoes-filter-box label {
+  color: #333;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.avaliacoes-filter-box select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filter-button {
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  background: var(--vinho);
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(138, 0, 51, 0.22);
+  transition: 0.2s ease;
+}
+
+.filter-button:hover {
+  background: var(--vinho-escuro);
+  transform: translateY(-2px);
+}
+
+/* CARDS */
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.review-card {
+  min-height: 240px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(138, 0, 51, 0.09);
+  transition: 0.25s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(138, 0, 51, 0.16);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.review-header img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.review-header h2 {
+  color: #222;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.review-header p {
+  color: #666;
+  font-size: 12px;
+}
+
+.review-rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.stars {
+  color: var(--amarelo);
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.review-rating-row span {
+  color: #666;
+  font-size: 12px;
+}
+
+.review-text {
+  color: #333;
+  font-size: 14px;
+  line-height: 22px;
+  margin-bottom: 18px;
+}
+
+.review-category {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.review-category.historico {
+  background: #ffd8e6;
+  color: var(--vinho);
+}
+
+.review-category.natureza {
+  background: #c9f1d3;
+  color: #106b2d;
+}
+
+.review-category.cultura {
+  background: #e3d6ff;
+  color: #5d34a5;
+}
+
+.review-category.gastronomia {
+  background: #ffe1b8;
+  color: #c46a00;
+}
+
+/* BOTÃO FINAL */
+
+.ver-mais-avaliacoes {
+  margin: 30px 0 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.ver-mais-avaliacoes button {
+  height: 44px;
+  padding: 0 70px;
+  border: 1px solid var(--vinho);
+  border-radius: 8px;
+  background: white;
+  color: var(--vinho);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ver-mais-avaliacoes button:hover {
+  background: var(--vinho);
+  color: white;
+}
+
+/* FOOTER NO FINAL */
+
+.avaliacoes-page > .footer {
+  margin-top: auto;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1200px) {
+  .avaliacoes-container {
+    width: 94%;
+  }
+
+  .avaliacoes-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-number {
+    border-right: none;
+    border-bottom: 1px solid #eeeeee;
+    padding-right: 0;
+    padding-bottom: 24px;
+  }
+
+  .avaliacoes-filter-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-button {
+    grid-column: span 2;
+  }
+
+  .reviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .avaliacoes-hero h1 {
+    font-size: 38px;
+  }
+
+  .avaliacoes-hero p {
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .avaliacoes-filter-card {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-button {
+    grid-column: span 1;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ver-mais-avaliacoes button {
+    width: 100%;
+    padding: 0;
+  }
+}

@@ -1,0 +1,430 @@
+:root {
+  --vinho: #8a0033;
+  --vinho-escuro: #650026;
+  --amarelo: #f5b400;
+  --azul: #69bdf2;
+  --azul-claro: #eaf7ff;
+  --branco: #ffffff;
+  --texto: #181818;
+  --cinza: #606060;
+  --borda: #dddddd;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.pontos-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+}
+
+.pontos-container {
+  width: 85%;
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+/* HERO */
+
+.pontos-hero {
+  min-height: 170px;
+  margin-top: 20px;
+  margin-bottom: 22px;
+  padding: 30px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.pontos-hero h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--vinho);
+  font-size: 52px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.pontos-hero p {
+  max-width: 430px;
+  font-size: 18px;
+  line-height: 28px;
+  color: #222;
+}
+
+.hero-decoration {
+  flex: 1;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.church-hero-image {
+  width: 430px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.hero-decoration > span {
+  font-size: 42px;
+  color: var(--vinho);
+  opacity: 0.7;
+}
+
+.hero-decoration .pin {
+  margin: 0 45px;
+  font-size: 34px;
+}
+
+.dotted-line {
+  width: 280px;
+  height: 60px;
+  border-top: 3px dashed rgba(138, 0, 51, 0.35);
+  border-radius: 50%;
+  transform: rotate(8deg);
+}
+
+.church-art {
+  font-size: 110px;
+  color: var(--vinho);
+  opacity: 0.28;
+}
+
+/* FILTROS */
+
+.search-card {
+  width: 100%;
+  min-height: 92px;
+  margin-bottom: 26px;
+  padding: 22px;
+
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px rgba(138, 0, 51, 0.08);
+
+  display: grid;
+  grid-template-columns: 1.35fr 1.1fr 1.1fr 1fr 140px;
+  gap: 18px;
+  align-items: center;
+}
+
+.search-input {
+  height: 52px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 0 16px;
+  background: white;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input span {
+  font-size: 20px;
+  color: #777;
+}
+
+.search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: var(--texto);
+}
+
+.search-input input::placeholder {
+  color: #7a7f8a;
+}
+
+.filter-box {
+  height: 52px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 7px 14px;
+  background: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.filter-box label {
+  font-size: 12px;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.filter-box select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--texto);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-button {
+  height: 52px;
+  border: none;
+  border-radius: 10px;
+  background: var(--vinho);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(138, 0, 51, 0.22);
+  transition: 0.2s ease;
+}
+
+.search-button:hover {
+  background: var(--vinho-escuro);
+  transform: translateY(-2px);
+}
+
+/* GRID */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.ponto-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(138, 0, 51, 0.09);
+  transition: 0.25s ease;
+}
+
+.ponto-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(138, 0, 51, 0.16);
+}
+
+.card-image {
+  height: 185px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+
+  background: var(--vinho);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+
+  padding: 8px 10px;
+  border-radius: 7px;
+}
+
+.favorite-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+  background: white;
+  color: var(--vinho);
+
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-content {
+  padding: 16px 18px 18px;
+}
+
+.card-content h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--vinho);
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+
+.category-tag {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.category-tag.historico {
+  background: #ffd8e6;
+  color: var(--vinho);
+}
+
+.category-tag.natureza {
+  background: #c9f1d3;
+  color: #106b2d;
+}
+
+.category-tag.lazer {
+  background: #cfeaff;
+  color: #1c669b;
+}
+
+.category-tag.cultura {
+  background: #e3d6ff;
+  color: #5d34a5;
+}
+
+.category-tag.gastronomia {
+  background: #ffe1b8;
+  color: #c46a00;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #4d5560;
+  font-size: 13px;
+}
+
+.card-footer span {
+  margin-right: auto;
+}
+
+.card-footer strong {
+  color: var(--amarelo);
+  font-size: 13px;
+}
+
+.card-footer small {
+  color: #4d5560;
+  font-size: 12px;
+}
+
+/* PAGINAÇÃO */
+
+.pagination {
+  width: fit-content;
+  margin: 30px auto 36px;
+  padding: 10px 16px;
+
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(138, 0, 51, 0.08);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination button {
+  width: 38px;
+  height: 38px;
+
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pagination .active-page {
+  background: var(--vinho);
+  color: white;
+}
+
+.pagination span {
+  color: #555;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1200px) {
+  .pontos-container {
+    width: 94%;
+  }
+
+  .search-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-button {
+    grid-column: span 2;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pontos-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-decoration {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .pontos-hero h1 {
+    font-size: 38px;
+  }
+
+  .pontos-hero p {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .hero-decoration {
+    display: none;
+  }
+
+  .search-card {
+    grid-template-columns: 1fr;
+  }
+
+  .search-button {
+    grid-column: span 1;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

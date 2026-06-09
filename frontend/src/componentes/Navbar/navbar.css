@@ -1,0 +1,120 @@
+.navbar {
+  width: 94%;
+  max-width: 1450px;
+  height: 78px;
+  margin: 16px auto 28px;
+  padding: 10px 32px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo-icon img {
+  width: 54px;
+  height: auto;
+  display: block;
+}
+
+.logo h1 {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  color: #8a0032;
+  line-height: 1;
+}
+
+.logo span {
+  display: block;
+  color: #62aee8;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  margin-top: 6px;
+}
+
+.logo p {
+  color: #8a0032;
+  font-size: 10px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.menu a {
+  color: #111;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  position: relative;
+}
+
+.menu a.active {
+  color: #8a0032;
+}
+
+.menu a.active::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  background: #8a0032;
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  bottom: -18px;
+}
+
+.header-login-btn {
+  width: 105px;
+  height: 52px;
+  border: none;
+  border-radius: 8px;
+  background: #8a0032;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(138, 0, 50, 0.3);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+@media (max-width: 1200px) {
+  .navbar {
+    width: 94%;
+  }
+
+  .menu {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .navbar {
+    height: auto;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .menu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
