@@ -29,8 +29,6 @@ async function autenticarUsuario(req, res, next) {
         id: true,
         nome: true,
         email: true,
-        telefone: true,
-        fotoUrl: true,
         tipo: true,
         criadoEm: true,
         atualizadoEm: true,

@@ -16,9 +16,26 @@ import {
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
 import { Link } from "react-router-dom";
+import { loginUsuario } from "../../servicos/login-cadastro";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+    async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    try {
+    
+      const data = await loginUsuario(email, senha);
+      localStorage.setItem("token", data.token);
+    
+      console.log("Login realizado com sucesso:", data);
+    } catch (error) {
+      console.log("Erro ao fazer login:", error);
+    }
+  }
 
   return (
     <div className="login-page">
@@ -93,7 +110,7 @@ function Login() {
 
           <h2>Entrar na sua conta</h2>
 
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="form-group">
               <label htmlFor="email">E-mail</label>
 
@@ -106,6 +123,8 @@ function Login() {
                   type="email"
                   id="email"
                   placeholder="E-mail ou nome de usuário"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
@@ -122,6 +141,8 @@ function Login() {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="Digite sua senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
                 />
 
                 <button
@@ -148,8 +169,8 @@ function Login() {
               <a href="#">Esqueci minha senha</a>
             </div>
 
-            <button type="submit" className="submit-btn">
-              <span>➜</span>
+    <button type="button" className="submit-btn"> 
+                <span>➜</span>
               Entrar
             </button>
 

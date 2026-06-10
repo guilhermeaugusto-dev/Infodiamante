@@ -19,17 +19,21 @@ function gerarToken(usuario) {
 
 async function cadastrarUsuario(req, res) {
   try {
-    const { nome, email, senha, telefone, fotoUrl } = req.body;
-
+    const { nome, email, senha, confirmarSenha } = req.body;
+    if (senha !== confirmarSenha) {
+      return res.status(400).json({
+        error: "As senhas não coincidem.",
+      });
+    }
     if (!nome || !email || !senha) {
       return res.status(400).json({
-        mensagem: "Nome, e-mail e senha são obrigatórios.",
+        error: "Nome, e-mail e senha são obrigatórios.",
       });
     }
 
     if (senha.length < 8) {
       return res.status(400).json({
-        mensagem: "A senha precisa ter pelo menos 8 caracteres.",
+        error: "A senha precisa ter pelo menos 8 caracteres.",
       });
     }
 
@@ -39,7 +43,7 @@ async function cadastrarUsuario(req, res) {
 
     if (usuarioExiste) {
       return res.status(409).json({
-        mensagem: "Este e-mail já está cadastrado.",
+        error: "Este e-mail já está cadastrado.",
       });
     }
 
@@ -50,16 +54,12 @@ async function cadastrarUsuario(req, res) {
         nome,
         email,
         senha: senhaCriptografada,
-        telefone,
-        fotoUrl,
         tipo: "USUARIO",
       },
       select: {
         id: true,
         nome: true,
         email: true,
-        telefone: true,
-        fotoUrl: true,
         tipo: true,
         criadoEm: true,
         atualizadoEm: true,
@@ -74,7 +74,7 @@ async function cadastrarUsuario(req, res) {
     console.error(error);
 
     return res.status(500).json({
-      mensagem: "Erro interno ao cadastrar usuário.",
+      error: "Erro interno ao cadastrar usuário.",
     });
   }
 }
@@ -85,7 +85,7 @@ async function loginUsuario(req, res) {
 
     if (!email || !senha) {
       return res.status(400).json({
-        mensagem: "E-mail e senha são obrigatórios.",
+        error: "E-mail e senha são obrigatórios.",
       });
     }
 
@@ -95,7 +95,7 @@ async function loginUsuario(req, res) {
 
     if (!usuario) {
       return res.status(401).json({
-        mensagem: "E-mail ou senha inválidos.",
+        error: "E-mail ou senha inválidos.",
       });
     }
 
@@ -103,7 +103,7 @@ async function loginUsuario(req, res) {
 
     if (!senhaValida) {
       return res.status(401).json({
-        mensagem: "E-mail ou senha inválidos.",
+        error: "E-mail ou senha inválidos.",
       });
     }
 
@@ -116,8 +116,6 @@ async function loginUsuario(req, res) {
         id: usuario.id,
         nome: usuario.nome,
         email: usuario.email,
-        telefone: usuario.telefone,
-        fotoUrl: usuario.fotoUrl,
         tipo: usuario.tipo,
         criadoEm: usuario.criadoEm,
         atualizadoEm: usuario.atualizadoEm,
@@ -127,7 +125,7 @@ async function loginUsuario(req, res) {
     console.error(error);
 
     return res.status(500).json({
-      mensagem: "Erro interno ao fazer login.",
+      error: "Erro interno ao fazer login.",
     });
   }
 }
@@ -136,33 +134,6 @@ async function buscarUsuarioLogado(req, res) {
   return res.status(200).json(req.usuario);
 }
 
-async function listarUsuarios(req, res) {
-  try {
-    const usuarios = await prisma.usuario.findMany({
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-        telefone: true,
-        fotoUrl: true,
-        tipo: true,
-        criadoEm: true,
-        atualizadoEm: true,
-      },
-      orderBy: {
-        criadoEm: "desc",
-      },
-    });
-
-    return res.status(200).json(usuarios);
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      mensagem: "Erro interno ao listar usuários.",
-    });
-  }
-}
 
 async function buscarUsuarioPorId(req, res) {
   try {
@@ -186,7 +157,7 @@ async function buscarUsuarioPorId(req, res) {
 
     if (!usuario) {
       return res.status(404).json({
-        mensagem: "Usuário não encontrado.",
+        error: "Usuário não encontrado.",
       });
     }
 
@@ -195,7 +166,7 @@ async function buscarUsuarioPorId(req, res) {
     console.error(error);
 
     return res.status(500).json({
-      mensagem: "Erro interno ao buscar usuário.",
+      error: "Erro interno ao buscar usuário.",
     });
   }
 }
@@ -203,13 +174,13 @@ async function buscarUsuarioPorId(req, res) {
 async function atualizarUsuario(req, res) {
   try {
     const { id } = req.params;
-    const { nome, telefone, fotoUrl } = req.body;
+    const { nome   } = req.body;
 
     const usuarioId = Number(id);
 
     if (req.usuario.id !== usuarioId && req.usuario.tipo !== "ADMIN") {
       return res.status(403).json({
-        mensagem: "Você só pode atualizar sua própria conta.",
+        error: "Você só pode atualizar sua própria conta.",
       });
     }
 
@@ -219,7 +190,7 @@ async function atualizarUsuario(req, res) {
 
     if (!usuarioExiste) {
       return res.status(404).json({
-        mensagem: "Usuário não encontrado.",
+        error: "Usuário não encontrado.",
       });
     }
 
@@ -250,7 +221,7 @@ async function atualizarUsuario(req, res) {
     console.error(error);
 
     return res.status(500).json({
-      mensagem: "Erro interno ao atualizar usuário.",
+      error: "Erro interno ao atualizar usuário.",
     });
   }
 }
@@ -266,7 +237,7 @@ async function deletarUsuario(req, res) {
 
     if (!usuarioExiste) {
       return res.status(404).json({
-        mensagem: "Usuário não encontrado.",
+        error: "Usuário não encontrado.",
       });
     }
 
@@ -281,7 +252,7 @@ async function deletarUsuario(req, res) {
     console.error(error);
 
     return res.status(500).json({
-      mensagem: "Erro interno ao deletar usuário.",
+      error: "Erro interno ao deletar usuário.",
     });
   }
 }
@@ -290,7 +261,6 @@ module.exports = {
   cadastrarUsuario,
   loginUsuario,
   buscarUsuarioLogado,
-  listarUsuarios,
   buscarUsuarioPorId,
   atualizarUsuario,
   deletarUsuario,

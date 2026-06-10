@@ -4,10 +4,40 @@ import { google, facebook, usuario, tranca, olho, olhoSemTranca } from "../../as
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
 import { Link } from "react-router-dom";
+import { cadastrarUsuario } from "../../servicos/login-cadastro";
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState(""); 
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState(""); 
+
+async function handleCadastro(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+
+  if (senha !== confirmarSenha) {
+    alert("As senhas não conferem");
+    return;
+  }
+
+  try {
+    const data = await cadastrarUsuario(nome, email, senha, confirmarSenha);
+
+    console.log("Usuário cadastrado:", data);
+    alert("Conta criada com sucesso!");
+    window.location.href = "/pontos-turisticos";
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Erro ao cadastrar usuário:", error.message);
+      alert(error.message);
+    } else {
+      console.log("Erro desconhecido:", error);
+      alert("Erro ao criar conta");
+    }
+  }
+}
 
   return (
     <div className="login-page">
@@ -56,14 +86,20 @@ function Signup() {
 
           <h2>Crie sua conta</h2>
 
-          <form>
+         <form onSubmit={handleCadastro }>
             <div className="form-group">
               <label htmlFor="name">Nome completo</label>
               <div className="input-wrapper">
                 <span>
                   <img src={usuario} alt="Usuário" />
                 </span>
-                <input type="text" id="name" placeholder="Seu nome completo" />
+                <input 
+                  type="text" 
+                  id="name" 
+                  placeholder="Seu nome completo" 
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                />
               </div>
             </div>
 
@@ -73,7 +109,13 @@ function Signup() {
                 <span>
                   <img src={usuario} alt="E-mail" />
                 </span>
-                <input type="email" id="email" placeholder="Seu melhor e-mail" />
+                <input 
+                  type="email" 
+                  id="email" 
+                  placeholder="Seu melhor e-mail" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </div>
 
@@ -88,6 +130,8 @@ function Signup() {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="Crie uma senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}  
                 />
 
                 <button
@@ -116,6 +160,8 @@ function Signup() {
                   type={showConfirm ? "text" : "password"}
                   id="confirm"
                   placeholder="Repita a senha"
+                  value={confirmarSenha}
+                  onChange={(e) => setConfirmarSenha(e.target.value)}
                 />
 
                 <button
@@ -170,5 +216,6 @@ function Signup() {
     </div>
   );
 }
+
 
 export default Signup;

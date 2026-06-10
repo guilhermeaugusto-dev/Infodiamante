@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-const usuarioRoutes = require("./routes/usuarioRoutes");
+const usuarioRoutes = require("./routes/usuarioRoute");
 
 const app = express();
 
@@ -15,7 +15,6 @@ app.get("/", (req, res) => {
     mensagem: "API funcionando.",
   });
 });
-
 app.use("/usuarios", usuarioRoutes);
 
 const PORT = process.env.PORT || 3000;
