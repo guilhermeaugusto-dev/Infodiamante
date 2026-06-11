@@ -29,14 +29,15 @@ function Login() {
     event.preventDefault();
     try {
       const data = await loginUsuario(email, senha);
-      localStorage.setItem("token", data.usuario.token);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("nome", data.usuario.nome);
       localStorage.setItem("email", data.usuario.email);
-       navigate("/pontos-turisticos");
+      navigate("/pontos-turisticos");
     
       console.log("Login realizado com sucesso:", data);
     } catch (error) {
       console.log("Erro ao fazer login:", error);
+
     }
   }
 console.log("Token salvo:", localStorage.getItem("token"));

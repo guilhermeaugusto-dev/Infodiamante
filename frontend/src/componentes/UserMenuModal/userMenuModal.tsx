@@ -8,8 +8,10 @@ function UserMenuModal() {
 
   const nomeUsuario = localStorage.getItem("nome");
   console.log(localStorage.getItem("nome"));
-  console.log("Nome do usuário:", nomeUsuario);
   const primeiroNome = nomeUsuario ? nomeUsuario.split(" ")[0] : "Usuário";
+  const fotoUrl = localStorage.getItem("fotoUrl");
+  const inicial = primeiroNome.charAt(0).toUpperCase();
+
 
   function sair() {
     localStorage.removeItem("token");
@@ -23,14 +25,20 @@ function UserMenuModal() {
   return (
     <div className="user-menu">
       <button
-        type="button"
-        className="user-menu-button"
-        onClick={() => setAberto(!aberto)}
-      >
-        <span className="user-icon">👤</span>
-        <span>{primeiroNome}</span>
-      </button>
-
+      type="button"
+      className="user-menu-button"
+      onClick={() => setAberto(!aberto)}
+    >
+      {fotoUrl ? (
+        <img
+          src={fotoUrl}
+          alt="Foto do usuário"
+          className="user-menu-photo"
+        />
+      ) : (
+        <span className="user-menu-initial">{inicial}</span>
+      )}
+    </button>
       {aberto && (
         <div className="user-modal">
           <div className="user-modal-header">

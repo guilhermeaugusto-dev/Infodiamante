@@ -8,6 +8,7 @@ import CriarRoteiro from "./pages/CriarRoteiro/criarRoteiro";
 import Guias from "./pages/Guias/guias";
 import Avaliacoes from "./pages/Avaliacoes/Avaliacoes";
 import PublicRoute from "./routes/PublicRoute";
+import Configuracoes from "./pages/Configuracoes/Configuracoes";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
       <Route path="/criarRoteiro" element={<CriarRoteiro />} />
       <Route path="/guias" element={<Guias />} />
       <Route path="/avaliacoes" element={<Avaliacoes />} />
+      <Route path="/configuracoes" element={<Configuracoes />} />
     </Routes>
   );
 }

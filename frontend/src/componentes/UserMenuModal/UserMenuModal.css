@@ -1,20 +1,49 @@
 .user-menu {
   position: relative;
 }
-
 .user-menu-button {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+
   display: flex;
   align-items: center;
-  gap: 8px;
-  border: none;
-  background: #650026;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-weight: 600;
-  cursor: pointer;
+  justify-content: center;
 }
 
+
+.user-menu-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+.user-menu-initial {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #5b1238;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+.user-menu-button:hover {
+  transform: scale(1.05);
+}
+.user-icon {
+  font-size: 24px;
+}
 .user-icon {
   font-size: 18px;
 }

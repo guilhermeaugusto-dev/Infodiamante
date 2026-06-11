@@ -1,7 +1,7 @@
 .navbar {
   width: 94%;
   max-width: 1450px;
-  height: 78px;
+  min-height: 78px;
   margin: 16px auto 28px;
   padding: 10px 32px;
   background: #ffffff;
@@ -11,6 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  overflow: visible;
 }
 
 .logo {

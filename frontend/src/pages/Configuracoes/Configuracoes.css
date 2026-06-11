@@ -1,0 +1,188 @@
+.config-page {
+  min-height: 100vh;
+  background: #f6f1de;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.config-card {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.config-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.config-header h1 {
+  margin: 0;
+  color: #5b1238;
+  font-size: 32px;
+}
+
+.config-header p {
+  margin-top: 8px;
+  color: #666;
+  font-size: 15px;
+}
+
+.profile-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #f6f1de;
+  padding: 18px;
+  border-radius: 18px;
+  margin-bottom: 28px;
+}
+
+.profile-avatar {
+  width: 76px;
+  height: 76px;
+  background: #5b1238;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-size: 30px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info h2 {
+  margin: 0;
+  color: #222;
+  font-size: 22px;
+}
+
+.profile-info span {
+  display: block;
+  color: #666;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.btn-carregar-foto {
+  display: inline-block;
+  margin-top: 10px;
+  background: #5b1238;
+  color: #ffffff;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-carregar-foto:hover {
+  background: #74174a;
+}
+
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input {
+  height: 46px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 15px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #5b1238;
+}
+
+.mensagem {
+  background: #e7f8ef;
+  color: #167044;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.buttons-area {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-salvar,
+.btn-sair {
+  flex: 1;
+  height: 46px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.btn-salvar {
+  background: #5b1238;
+  color: #ffffff;
+}
+
+.btn-salvar:hover {
+  background: #74174a;
+}
+
+.btn-sair {
+  background: #e6e6e6;
+  color: #333;
+}
+
+.btn-sair:hover {
+  background: #d5d5d5;
+}
+
+@media (max-width: 500px) {
+  .config-card {
+    padding: 24px;
+  }
+
+  .profile-area {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .buttons-area {
+    flex-direction: column;
+  }
+
+  .config-header h1 {
+    font-size: 26px;
+  }
+}
