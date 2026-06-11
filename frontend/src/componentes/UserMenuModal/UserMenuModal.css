@@ -1,0 +1,87 @@
+.user-menu {
+  position: relative;
+}
+
+.user-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: #650026;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.user-icon {
+  font-size: 18px;
+}
+
+.user-modal {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 220px;
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  z-index: 999;
+}
+
+.user-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+}
+
+.user-modal-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:white ;
+  color: white;
+  border-radius: 50%;
+}
+
+.user-modal-header strong {
+  color: #223a58;
+  font-size: 15px;
+}
+
+.user-modal-header p {
+  margin: 2px 0 0;
+  color: #777;
+  font-size: 12px;
+}
+
+.user-modal-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #223a58;
+  cursor: pointer;
+}
+
+.user-modal-option:hover {
+  background: #f2f2f2;
+}
+
+.user-modal-option.sair {
+  color: #c0392b;
+}
+
+.user-modal-option.sair:hover {
+  background: #fdecea;
+}
