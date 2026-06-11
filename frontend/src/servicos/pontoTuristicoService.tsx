@@ -53,3 +53,30 @@ export function cadastrarPontoTuristico(dados: DadosPontoTuristico) {
     return data;
   });
 }
+
+export async function listarPontosTuristicos() {
+  const response = await fetch("http://localhost:3000/pontos-turisticos", {
+    method: "GET",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.mensagem || "Erro ao buscar pontos turísticos.");
+  }
+
+  return data.pontos || data;
+}
+export async function buscarPontoTuristicoPorId(id: number) {
+  const response = await fetch(`http://localhost:3000/pontos-turisticos/${id}`, {
+    method: "GET",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.mensagem || "Erro ao buscar ponto turístico.");
+  }
+
+  return data.ponto || data;
+}
