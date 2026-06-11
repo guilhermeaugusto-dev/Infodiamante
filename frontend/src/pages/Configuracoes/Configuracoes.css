@@ -1,188 +1,488 @@
-.config-page {
+.editar-page {
   min-height: 100vh;
-  background: #f6f1de;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 20px;
+  background: #f8f9fa;
+  color: #333333;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
-.config-card {
-  width: 100%;
-  max-width: 560px;
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 32px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+.editar-main {
+  width: 94%;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 20px 0 60px;
+  flex: 1;
 }
 
-.config-header {
-  text-align: center;
-  margin-bottom: 28px;
+.editar-title-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  gap: 24px;
 }
 
-.config-header h1 {
+.editar-title-content h1 {
+  margin: 0 0 14px;
+  color: #800020;
+  font-family: Georgia, serif;
+  font-size: 54px;
+  line-height: 1;
+}
+
+.editar-title-content p {
+  color: #5f6368;
+  max-width: 680px;
+  font-size: 16px;
+  line-height: 1.6;
   margin: 0;
-  color: #5b1238;
-  font-size: 32px;
 }
 
-.config-header p {
-  margin-top: 8px;
-  color: #666;
-  font-size: 15px;
+.editar-title-line {
+  width: 230px;
+  height: 2px;
+  background: #9cc9ef;
+  margin-top: 24px;
+  position: relative;
 }
 
-.profile-area {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #f6f1de;
-  padding: 18px;
-  border-radius: 18px;
-  margin-bottom: 28px;
+.editar-title-line span {
+  width: 10px;
+  height: 10px;
+  background: #62aee8;
+  display: block;
+  transform: rotate(45deg);
+  position: absolute;
+  left: 50%;
+  top: -4px;
 }
 
-.profile-avatar {
-  width: 76px;
-  height: 76px;
-  background: #5b1238;
-  color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  font-size: 30px;
-  font-weight: bold;
+.editar-decoration {
+  opacity: 0.55;
   flex-shrink: 0;
 }
 
-.profile-avatar img {
+.editar-card {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+
+  display: grid;
+  grid-template-columns: 250px 1fr 470px;
+  gap: 30px;
+  align-items: start;
+}
+
+.editar-profile-card {
+  min-height: 390px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 30px 20px;
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.editar-avatar {
+  width: 165px;
+  height: 165px;
+  border-radius: 50%;
+  border: 6px solid #ffffff;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+  background: #800020;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editar-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.profile-info h2 {
-  margin: 0;
-  color: #222;
-  font-size: 22px;
-}
-
-.profile-info span {
-  display: block;
-  color: #666;
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.btn-carregar-foto {
-  display: inline-block;
-  margin-top: 10px;
-  background: #5b1238;
+.editar-avatar span {
   color: #ffffff;
-  padding: 9px 14px;
-  border-radius: 10px;
-  font-size: 14px;
+  font-size: 62px;
+  font-weight: 800;
+}
+
+.editar-foto-btn {
+  margin-top: 28px;
+  width: 170px;
+  height: 44px;
+  border: 1px solid #800020;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #800020;
+  font-size: 15px;
+  font-weight: 800;
   cursor: pointer;
-  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.btn-carregar-foto:hover {
-  background: #74174a;
+.editar-foto-btn:hover {
+  background: #f8eaf0;
 }
 
-.config-form {
+.editar-profile-card p {
+  color: #777777;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 16px;
+}
+
+.editar-form-area {
+  min-width: 0;
+}
+
+.editar-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 30px;
+}
+
+.editar-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editar-form-group.full {
+  grid-column: 1 / -1;
+}
+
+.editar-form-group label {
+  color: #333333;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.editar-form-group input,
+.editar-form-group textarea {
+  width: 100%;
+  border: 1px solid #d4d7dc;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 15px;
+  outline: none;
+}
+
+.editar-form-group input {
+  height: 44px;
+  padding: 0 14px;
+}
+
+.editar-form-group textarea {
+  min-height: 125px;
+  resize: none;
+  padding: 14px;
+  line-height: 1.5;
+}
+
+.editar-form-group input:focus,
+.editar-form-group textarea:focus {
+  border-color: #800020;
+}
+
+.editar-form-group small {
+  color: #777777;
+  font-size: 12px;
+}
+
+.editar-form-group.full small {
+  text-align: right;
+  margin-top: -28px;
+  margin-right: 10px;
+}
+
+.editar-input-lock,
+.editar-password {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.editar-input-lock input,
+.editar-password input {
+  padding-right: 42px;
+}
+
+.editar-input-lock svg,
+.editar-password svg {
+  position: absolute;
+  right: 14px;
+  color: #777777;
+}
+
+.editar-input-lock input:disabled {
+  background: #f8f9fa;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.editar-side-area {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.form-group {
+.editar-side-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 22px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.editar-side-title {
   display: flex;
-  flex-direction: column;
-  gap: 7px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.form-group label {
-  font-weight: 600;
-  color: #333;
-}
+.editar-side-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #e6f3ff;
+  color: #800020;
 
-.form-group input {
-  height: 46px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 0 14px;
-  font-size: 15px;
-  outline: none;
-}
-
-.form-group input:focus {
-  border-color: #5b1238;
-}
-
-.mensagem {
-  background: #e7f8ef;
-  color: #167044;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.buttons-area {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.editar-side-title h2 {
+  margin: 0;
+  color: #800020;
+  font-family: Georgia, serif;
+  font-size: 26px;
+}
+
+.editar-small-line {
+  width: 130px;
+  height: 2px;
+  background: #9cc9ef;
   margin-top: 10px;
+  position: relative;
 }
 
-.btn-salvar,
-.btn-sair {
-  flex: 1;
-  height: 46px;
-  border: none;
-  border-radius: 12px;
+.editar-small-line::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #62aee8;
+  transform: rotate(45deg);
+  position: absolute;
+  left: 50%;
+  top: -3px;
+}
+
+.editar-toggle-row {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: start;
+  margin-top: 18px;
   cursor: pointer;
-  font-weight: bold;
+}
+
+.editar-toggle-row input {
+  display: none;
+}
+
+.editar-toggle {
+  width: 42px;
+  height: 22px;
+  background: #d1d5db;
+  border-radius: 999px;
+  position: relative;
+  margin-top: 4px;
+}
+
+.editar-toggle::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: 0.2s;
+}
+
+.editar-toggle-row input:checked + .editar-toggle {
+  background: #800020;
+}
+
+.editar-toggle-row input:checked + .editar-toggle::after {
+  left: 22px;
+}
+
+.editar-toggle-row strong {
+  color: #333333;
+  font-size: 14px;
+}
+
+.editar-toggle-row p {
+  margin: 4px 0 0;
+  color: #777777;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.editar-message {
+  margin-top: 30px;
+  border-top: 1px solid #eeeeee;
+  padding-top: 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editar-message.sucesso {
+  color: #168a34;
+}
+
+.editar-message.erro {
+  color: #c0392b;
+}
+
+.editar-message strong {
   font-size: 15px;
 }
 
-.btn-salvar {
-  background: #5b1238;
+.editar-message p {
+  margin: 4px 0 0;
+  color: #777777;
+  font-size: 13px;
+}
+
+.editar-actions {
+  grid-column: 1 / -1;
+  border-top: 1px solid #eeeeee;
+  padding-top: 18px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.editar-cancelar,
+.editar-salvar {
+  height: 50px;
+  border-radius: 9px;
+  padding: 0 34px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.editar-cancelar {
+  background: #ffffff;
+  border: 1px solid #d4d7dc;
+  color: #333333;
+}
+
+.editar-cancelar:hover {
+  background: #f8f9fa;
+}
+
+.editar-salvar {
+  background: #800020;
+  border: none;
   color: #ffffff;
+  box-shadow: 0 8px 18px rgba(128, 0, 32, 0.28);
 }
 
-.btn-salvar:hover {
-  background: #74174a;
+.editar-salvar:hover {
+  background: #a3153b;
 }
 
-.btn-sair {
-  background: #e6e6e6;
-  color: #333;
-}
-
-.btn-sair:hover {
-  background: #d5d5d5;
-}
-
-@media (max-width: 500px) {
-  .config-card {
-    padding: 24px;
+@media (max-width: 1250px) {
+  .editar-card {
+    grid-template-columns: 240px 1fr;
   }
 
-  .profile-area {
+  .editar-side-area {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 850px) {
+  .editar-decoration {
+    display: none;
+  }
+
+  .editar-title-content h1 {
+    font-size: 42px;
+  }
+
+  .editar-card {
+    grid-template-columns: 1fr;
+  }
+
+  .editar-side-area {
+    grid-template-columns: 1fr;
+  }
+
+  .editar-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .editar-profile-card {
+    min-height: auto;
+  }
+
+  .editar-actions {
     flex-direction: column;
-    text-align: center;
   }
 
-  .buttons-area {
-    flex-direction: column;
+  .editar-cancelar,
+  .editar-salvar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .editar-main {
+    width: 92%;
   }
 
-  .config-header h1 {
-    font-size: 26px;
+  .editar-card {
+    padding: 20px;
+  }
+
+  .editar-title-content h1 {
+    font-size: 34px;
+  }
+
+  .editar-avatar {
+    width: 135px;
+    height: 135px;
   }
 }

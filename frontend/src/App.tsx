@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-
 import Login from "./pages/Login-cadastro/Login";
 import Signup from "./pages/Login-cadastro/Signup";
 import PontosTuristicos from "./pages/PontosTuristicos/PontosTuristicos";
@@ -9,6 +8,8 @@ import Guias from "./pages/Guias/guias";
 import Avaliacoes from "./pages/Avaliacoes/Avaliacoes";
 import PublicRoute from "./routes/PublicRoute";
 import Configuracoes from "./pages/Configuracoes/Configuracoes";
+import Historico from "./pages/historico/historico";
+import CadastrarPontoTuristico from "./pages/CadastrarPontoTuristico/CadastrarPontoTuristico";
 
 function App() {
   return (
@@ -36,6 +37,8 @@ function App() {
       <Route path="/guias" element={<Guias />} />
       <Route path="/avaliacoes" element={<Avaliacoes />} />
       <Route path="/configuracoes" element={<Configuracoes />} />
+      <Route path="/historico" element={<Historico />} />
+      <Route path="/admin/pontos-turisticos/novo" element={<CadastrarPontoTuristico />} />
     </Routes>
   );
 }

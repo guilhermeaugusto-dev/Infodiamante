@@ -2,7 +2,10 @@ export function atualizarUsuario(
   nome: string,
   email: string,
   telefone: string,
-  fotoArquivo: File | null
+  cidade: string,
+  bio: string,
+  fotoArquivo: File | null,
+  novaSenha?: string
 ) {
   const token = localStorage.getItem("token");
 
@@ -11,6 +14,12 @@ export function atualizarUsuario(
   formData.append("nome", nome);
   formData.append("email", email);
   formData.append("telefone", telefone);
+  formData.append("cidade", cidade);
+  formData.append("bio", bio);
+
+  if (novaSenha) {
+    formData.append("senha", novaSenha);
+  }
 
   if (fotoArquivo) {
     formData.append("foto", fotoArquivo);
@@ -22,11 +31,13 @@ export function atualizarUsuario(
       Authorization: `Bearer ${token}`,
     },
     body: formData,
-  }).then((response) => {
+  }).then(async (response) => {
+    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error("Erro ao atualizar usuário");
+      throw new Error(data.mensagem || "Erro ao atualizar usuário");
     }
 
-    return response.json();
+    return data;
   });
 }

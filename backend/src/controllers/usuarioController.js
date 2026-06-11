@@ -119,6 +119,9 @@ async function loginUsuario(req, res) {
         tipo: usuario.tipo,
         criadoEm: usuario.criadoEm,
         atualizadoEm: usuario.atualizadoEm,
+        telefone: usuario.telefone,
+        cidade: usuario.cidade,
+        bio: usuario.bio,
       },
     });
   } catch (error) {
@@ -148,6 +151,8 @@ async function buscarUsuarioPorId(req, res) {
         nome: true,
         email: true,
         telefone: true,
+        cidade: true,
+        bio: true,
         fotoUrl: true,
         tipo: true,
         criadoEm: true,
@@ -171,61 +176,69 @@ async function buscarUsuarioPorId(req, res) {
   }
 }
 
-async function atualizarUsuario(req, res) {
+ async function atualizarPerfil(req, res) {
   try {
-    const { id } = req.params;
-    const { nome   } = req.body;
+    const usuarioId = req.usuario.id;
+    const { nome, email, telefone, cidade, bio, senha } = req.body;
 
-    const usuarioId = Number(id);
+  
+    let fotoUrl;
 
-    if (req.usuario.id !== usuarioId && req.usuario.tipo !== "ADMIN") {
-      return res.status(403).json({
-        error: "Você só pode atualizar sua própria conta.",
-      });
+    if (req.file) {
+      fotoUrl = `http://localhost:3000/uploads/${req.file.filename}`;
     }
 
-    const usuarioExiste = await prisma.usuario.findUnique({
-      where: { id: usuarioId },
-    });
+    const dataAtualizacao = {
+      nome,
+      email,
+      telefone: telefone || null,
+      cidade: cidade || null,
+      bio: bio || null,
+      ...(fotoUrl && { fotoUrl }),
+    };
 
-    if (!usuarioExiste) {
-      return res.status(404).json({
-        error: "Usuário não encontrado.",
-      });
+    if (senha) {
+      const senhaCriptografada = await bcrypt.hash(senha, SALT_ROUNDS);
+      dataAtualizacao.senha = senhaCriptografada;
     }
+
 
     const usuarioAtualizado = await prisma.usuario.update({
-      where: { id: usuarioId },
+      where: {
+        id: usuarioId,
+      },
       data: {
         nome,
+        email,
         telefone,
-        fotoUrl,
+        cidade,
+        bio,
+        ...(fotoUrl && { fotoUrl }),
       },
       select: {
         id: true,
         nome: true,
         email: true,
         telefone: true,
+        cidade: true,
+        bio: true,
         fotoUrl: true,
         tipo: true,
-        criadoEm: true,
-        atualizadoEm: true,
       },
     });
 
     return res.status(200).json({
-      mensagem: "Usuário atualizado com sucesso.",
+      mensagem: "Perfil atualizado com sucesso.",
       usuario: usuarioAtualizado,
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
 
     return res.status(500).json({
-      error: "Erro interno ao atualizar usuário.",
+      mensagem: "Erro ao atualizar perfil.",
     });
   }
 }
-
 async function deletarUsuario(req, res) {
   try {
     const { id } = req.params;
@@ -262,6 +275,6 @@ module.exports = {
   loginUsuario,
   buscarUsuarioLogado,
   buscarUsuarioPorId,
-  atualizarUsuario,
+  atualizarPerfil,
   deletarUsuario,
 };

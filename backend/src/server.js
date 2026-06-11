@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 
 const usuarioRoutes = require("./routes/usuarioRoute");
+const pontoTuristicoRoute = require("./routes/pontoTuristicoRoute");
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.get("/", (req, res) => {
   });
 });
 app.use("/usuarios", usuarioRoutes);
+app.use("/pontos-turisticos", pontoTuristicoRoute);
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 3000;
 

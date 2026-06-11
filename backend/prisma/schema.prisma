@@ -33,13 +33,13 @@ model Usuario {
   nome      String
   email     String      @unique
   senha     String
+  bio       String?
   telefone  String?
+  cidade    String?
   fotoUrl   String?
   tipo      TipoUsuario @default(USUARIO)
-
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
-
   guia            Guia?
   roteiros        Roteiro[]
   avaliacoes      Avaliacao[]
@@ -54,9 +54,7 @@ model Categoria {
   nome      String  @unique
   descricao String?
   cor       String?
-
   pontosTuristicos PontoTuristico[]
-
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
@@ -67,12 +65,9 @@ model Regiao {
   id        Int     @id @default(autoincrement())
   nome      String  @unique
   descricao String?
-
   pontosTuristicos PontoTuristico[]
-
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
-
   @@map("regioes")
 }
 
@@ -87,7 +82,6 @@ model PontoTuristico {
   longitude Decimal? @db.Decimal(11, 8)
   imagemUrl String?
   ativo     Boolean @default(true)
-
   categoriaId Int
   regiaoId    Int?
 

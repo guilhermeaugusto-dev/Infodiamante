@@ -3,15 +3,18 @@ import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 import igreja from "../../templates/igreja.png";
 import UserMenuModal from "../UserMenuModal/userMenuModal";
+import { useUser } from "../../contexts/UserContext";
 
 function Navbar() {
 
 
   const token = localStorage.getItem("token");
-
+  const { usuario } = useUser();
+  const isAdmin = usuario?.tipo === "ADMIN";
   const usuarioLogado = !!token;
 
   return (
+    
     <header className="navbar">
       <Link to="/" className="logo">
         <div className="logo-icon">
@@ -27,12 +30,18 @@ function Navbar() {
 
       <nav className="menu">
         {!usuarioLogado && <NavLink to="/">Início</NavLink>}
+        
 
         <NavLink to="/pontos-turisticos">Pontos Turísticos</NavLink>
         <NavLink to="/criarRoteiro">Criar Roteiro</NavLink>
         <NavLink to="/guias">Guias</NavLink>
         <NavLink to="/promocoes">Promoções</NavLink>
         <NavLink to="/avaliacoes">Avaliações</NavLink>
+         {isAdmin && (
+    <NavLink to="/admin/pontos-turisticos/novo">
+      Cadastrar Ponto
+    </NavLink>
+  )}
       </nav>
 
       {!usuarioLogado ? (

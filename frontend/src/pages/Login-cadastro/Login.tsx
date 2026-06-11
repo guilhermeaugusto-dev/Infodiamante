@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Login.css";
+import { useUser } from "../../contexts/UserContext";
 
 import {
   google,
@@ -16,13 +17,13 @@ import {
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUsuario } from "../../servicos/login-cadastro";
+import { loginUsuario } from "../../servicos/login-cadastroService";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-
+  const { setUsuario, salvarUsuario } = useUser();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
     async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -30,8 +31,8 @@ function Login() {
     try {
       const data = await loginUsuario(email, senha);
       localStorage.setItem("token", data.token);
-      localStorage.setItem("nome", data.usuario.nome);
-      localStorage.setItem("email", data.usuario.email);
+      salvarUsuario(data.usuario);
+      setUsuario(data.usuario);
       navigate("/pontos-turisticos");
     
       console.log("Login realizado com sucesso:", data);

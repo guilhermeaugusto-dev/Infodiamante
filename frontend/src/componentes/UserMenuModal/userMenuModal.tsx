@@ -1,44 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./UserMenuModal.css";
+import { useUser } from "../../contexts/UserContext";
 
 function UserMenuModal() {
   const navigate = useNavigate();
   const [aberto, setAberto] = useState(false);
+  const { usuario, logout } = useUser();
 
-  const nomeUsuario = localStorage.getItem("nome");
-  console.log(localStorage.getItem("nome"));
+  const nomeUsuario = usuario?.nome;
   const primeiroNome = nomeUsuario ? nomeUsuario.split(" ")[0] : "Usuário";
-  const fotoUrl = localStorage.getItem("fotoUrl");
+  const fotoUrl = usuario?.fotoUrl;
   const inicial = primeiroNome.charAt(0).toUpperCase();
 
 
-  function sair() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("nome");
-    localStorage.removeItem("email");
-
-    setAberto(false);
-    navigate("/");
-  }
-
   return (
     <div className="user-menu">
-      <button
-      type="button"
-      className="user-menu-button"
-      onClick={() => setAberto(!aberto)}
-    >
-      {fotoUrl ? (
-        <img
-          src={fotoUrl}
-          alt="Foto do usuário"
-          className="user-menu-photo"
-        />
-      ) : (
-        <span className="user-menu-initial">{inicial}</span>
-      )}
-    </button>
+     <button
+  type="button"
+  className="user-menu-button"
+  onClick={() => setAberto(!aberto)}
+>
+  {fotoUrl ? (
+    <img src={fotoUrl} alt="Foto do usuário" className="user-menu-photo" />
+  ) : (
+    <span className="user-menu-initial">{inicial}</span>
+  )}
+</button>
       {aberto && (
         <div className="user-modal">
           <div className="user-modal-header">
@@ -59,14 +47,26 @@ function UserMenuModal() {
           >
             Configurações
           </button>
-
           <button
-            type="button"
-            className="user-modal-option sair"
-            onClick={sair}
-          >
-            Sair
-          </button>
+  type="button"
+  className="user-modal-option"
+  onClick={() => navigate("/historico")}
+>
+  Histórico
+</button>
+{usuario?.tipo === "ADMIN" && (
+  <button
+    type="button"
+    className="user-modal-option"
+    onClick={() => navigate("/admin/pontos-turisticos/novo")}
+  >
+    Cadastrar Ponto Turístico
+  </button>
+)}
+
+         <button type="button" className="user-modal-option sair" onClick={logout}>
+  Sair
+</button>
         </div>
       )}
     </div>

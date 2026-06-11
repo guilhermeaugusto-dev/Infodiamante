@@ -4,7 +4,7 @@ import { google, facebook, usuario, tranca, olho, olhoSemTranca } from "../../as
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
 import { Link } from "react-router-dom";
-import { cadastrarUsuario } from "../../servicos/login-cadastro";
+import { cadastrarUsuario } from "../../servicos/login-cadastroService";
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
