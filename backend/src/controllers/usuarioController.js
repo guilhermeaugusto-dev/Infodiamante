@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../services/prisma");
-
 const SALT_ROUNDS = 10;
 
 function gerarToken(usuario) {
@@ -122,6 +121,7 @@ async function loginUsuario(req, res) {
         telefone: usuario.telefone,
         cidade: usuario.cidade,
         bio: usuario.bio,
+        fotoUrl: usuario.fotoUrl,
       },
     });
   } catch (error) {
@@ -193,10 +193,9 @@ async function atualizarPerfil(req, res) {
       });
     }
 
-    let fotoUrl;
-
-    if (req.file) {
-      fotoUrl = `http://localhost:3000/uploads/${req.file.filename}`;
+      if (req.file) {
+      const imagemBase64 = req.file.buffer.toString("base64");
+      fotoUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
     }
 
     const dataAtualizacao = {

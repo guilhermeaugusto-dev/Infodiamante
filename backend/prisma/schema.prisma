@@ -36,7 +36,7 @@ model Usuario {
   bio       String?
   telefone  String?
   cidade    String?
-  fotoUrl   String?
+  fotoUrl   String? @db.LongText
   tipo      TipoUsuario @default(USUARIO)
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
@@ -80,7 +80,7 @@ model PontoTuristico {
   estado    String
   latitude  Decimal? @db.Decimal(10, 8)
   longitude Decimal? @db.Decimal(11, 8)
-  imagemUrl String?
+  imagemUrl String? @db.LongText
   ativo     Boolean @default(true)
   categoriaId Int
   regiaoId    Int?
@@ -108,7 +108,7 @@ model Guia {
   anosExperiencia Int?
   verificado      Boolean  @default(false)
   disponivel      Boolean  @default(true)
-
+  imagemUrl String? @db.LongText
   usuario Usuario @relation(fields: [usuarioId], references: [id])
 
   agendamentos AgendamentoGuia[]

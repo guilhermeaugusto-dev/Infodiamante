@@ -1,4 +1,6 @@
 const prisma = require("../services/prisma");
+const fs = require("fs");
+
 
 async function listarPontosTuristicos(req, res) {
   try {
@@ -97,12 +99,14 @@ async function criarPontoTuristico(req, res) {
       });
     }
 
-    let imagemUrl = req.body.imagemUrl || null;
+   let imagemUrl = req.body.imagemUrl || null;
 
-    if (req.file) {
-      imagemUrl = `http://localhost:3000/uploads/${req.file.filename}`;
-    }
+if (req.file) {
+  const imagemBuffer = fs.readFileSync(req.file.path);
+  const imagemBase64 = imagemBuffer.toString("base64");
 
+  imagemUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
+}
     const ponto = await prisma.pontoTuristico.create({
       data: {
         nome,
@@ -166,11 +170,14 @@ async function atualizarPontoTuristico(req, res) {
       });
     }
 
-    let novaImagemUrl = imagemUrl;
+   let novaImagemUrl = imagemUrl;
 
-    if (req.file) {
-      novaImagemUrl = `http://localhost:3000/uploads/${req.file.filename}`;
-    }
+if (req.file) {
+  const imagemBuffer = fs.readFileSync(req.file.path);
+  const imagemBase64 = imagemBuffer.toString("base64");
+
+  novaImagemUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
+}
 
     const pontoAtualizado = await prisma.pontoTuristico.update({
       where: {

@@ -32,6 +32,7 @@ function Login() {
       const data = await loginUsuario(email, senha);
       localStorage.setItem("token", data.token);
       salvarUsuario(data.usuario);
+      console.log("Token recebido:", data.fotoUrl);
       setUsuario(data.usuario);
       navigate("/pontos-turisticos");
     
