@@ -12,8 +12,8 @@ import {
 import Navbar from "../../componentes/Navbar/navbar";
 import Footer from "../../componentes/Footer/footer";
 import { useUser } from "../../contexts/UserContext";
-import { atualizarUsuario } from "../../servicos/ConfiguracaoService";
 import "./Configuracoes.css";
+import atualizarUsuario from "../../servicos/ConfiguracaoService";
 
 function Configuracoes() {
   const { usuario, salvarUsuario } = useUser();
@@ -54,71 +54,71 @@ useEffect(() => {
   }
 
   async function salvarAlteracoes(e: React.FormEvent) {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!nome.trim() || !email.trim()) {
-      setMensagem("Nome e e-mail são obrigatórios.");
-      return;
+  if (!nome.trim() || !email.trim()) {
+    setMensagem("Nome e e-mail são obrigatórios.");
+    return;
+  }
+
+  if (novaSenha && novaSenha.length < 8) {
+    setMensagem("A nova senha precisa ter pelo menos 8 caracteres.");
+    return;
+  }
+
+  if (novaSenha && novaSenha !== confirmarSenha) {
+    setMensagem("As senhas não coincidem.");
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    setMensagem("Usuário não está logado.");
+    return;
+  }
+
+  try {
+    const response = await atualizarUsuario(
+      nome,
+      email,
+      telefone,
+      cidade,
+      bio,
+      fotoArquivo,
+      novaSenha
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.mensagem || "Erro ao atualizar perfil.");
     }
 
-    if (novaSenha && novaSenha.length < 8) {
-      setMensagem("A nova senha precisa ter pelo menos 8 caracteres.");
-      return;
-    }
+    salvarUsuario(data.usuario);
 
-    if (novaSenha && novaSenha !== confirmarSenha) {
-      setMensagem("As senhas não coincidem.");
-      return;
-    }
+    setNome(data.usuario.nome || "");
+    setEmail(data.usuario.email || "");
+    setTelefone(data.usuario.telefone || "");
+    setCidade(data.usuario.cidade || "");
+    setBio(data.usuario.bio || "");
+    setFotoUrl(data.usuario.fotoUrl || "");
+    setPreviewFoto("");
+    setFotoArquivo(null);
+    setNovaSenha("");
+    setConfirmarSenha("");
 
-    const token = localStorage.getItem("token");
+    setMensagem("Perfil atualizado com sucesso.");
+  } catch (error) {
+    console.log("Erro ao atualizar perfil:", error);
 
-    if (!token) {
-      setMensagem("Usuário não está logado.");
-      return;
-    }
-
-    const formData = new FormData();
-
-    formData.append("nome", nome);
-    formData.append("email", email);
-    formData.append("telefone", telefone);
-    formData.append("cidade", cidade);
-    formData.append("bio", bio);
-
-    if (novaSenha) {
-      formData.append("senha", novaSenha);
-    }
-
-    if (fotoArquivo) {
-      formData.append("foto", fotoArquivo);
-    }
-
-    try {
-      const response = await atualizarUsuario(formData);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.mensagem || "Erro ao atualizar perfil.");
-      }
-
-      salvarUsuario(data.usuario);
-
-      setNome(data.usuario.nome);
-      setEmail(data.usuario.email);
-      setTelefone(data.usuario.telefone || "");
-      setFotoUrl(data.usuario.fotoUrl || "");
-      setPreviewFoto("");
-      setFotoArquivo(null);
-      setNovaSenha("");
-      setConfirmarSenha("");
-
-      setMensagem("Perfil atualizado com sucesso.");
-    } catch (error) {
-      console.log("Erro ao atualizar perfil:", error);
+    if (error instanceof Error) {
+      setMensagem(error.message);
+    } else {
       setMensagem("Erro ao atualizar perfil.");
     }
   }
+}
 
   return (
     <div className="editar-page">

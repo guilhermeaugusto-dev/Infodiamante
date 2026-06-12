@@ -176,12 +176,23 @@ async function buscarUsuarioPorId(req, res) {
   }
 }
 
- async function atualizarPerfil(req, res) {
+async function atualizarPerfil(req, res) {
   try {
     const usuarioId = req.usuario.id;
     const { nome, email, telefone, cidade, bio, senha } = req.body;
 
-  
+    if (!nome || !nome.trim()) {
+      return res.status(400).json({
+        mensagem: "Nome é obrigatório.",
+      });
+    }
+
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        mensagem: "E-mail é obrigatório.",
+      });
+    }
+
     let fotoUrl;
 
     if (req.file) {
@@ -189,32 +200,24 @@ async function buscarUsuarioPorId(req, res) {
     }
 
     const dataAtualizacao = {
-      nome,
-      email,
-      telefone: telefone || null,
-      cidade: cidade || null,
-      bio: bio || null,
+      nome: nome.trim(),
+      email: email.trim(),
+      telefone: telefone?.trim() || null,
+      cidade: cidade?.trim() || null,
+      bio: bio?.trim() || null,
       ...(fotoUrl && { fotoUrl }),
     };
 
-    if (senha) {
+    if (senha && senha.trim()) {
       const senhaCriptografada = await bcrypt.hash(senha, SALT_ROUNDS);
       dataAtualizacao.senha = senhaCriptografada;
     }
-
 
     const usuarioAtualizado = await prisma.usuario.update({
       where: {
         id: usuarioId,
       },
-      data: {
-        nome,
-        email,
-        telefone,
-        cidade,
-        bio,
-        ...(fotoUrl && { fotoUrl }),
-      },
+      data: dataAtualizacao,
       select: {
         id: true,
         nome: true,
@@ -224,6 +227,8 @@ async function buscarUsuarioPorId(req, res) {
         bio: true,
         fotoUrl: true,
         tipo: true,
+        criadoEm: true,
+        atualizadoEm: true,
       },
     });
 

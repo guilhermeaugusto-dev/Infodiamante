@@ -4,7 +4,6 @@ const prisma = require("../services/prisma");
 async function autenticarUsuario(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
-     console.log("Authorization recebido:", authHeader);
     if (!authHeader) {
       return res.status(401).json({
         mensagem: "Token não informado.",
