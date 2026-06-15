@@ -1,43 +1,119 @@
+import { useEffect, useMemo, useState } from "react";
+
 import "./Avaliacoes.css";
 import Navbar from "../../componentes/Navbar/navbar";
 import Footer from "../../componentes/Footer/footer";
 
+import {
+  listarAvaliacoes,
+  type Avaliacao,
+} from "../../servicos/avaliacaoService";
+
 function Avaliacoes() {
-  const avaliacoes = [
-    {
-      nome: "Mariana Souza",
-      lugar: "Visitou Igreja de São Francisco",
-      nota: 5,
-      data: "12/05/2024",
-      texto:
-        "Lugar incrível! A arquitetura é deslumbrante e a história fascinante. Super recomendo a visita guiada.",
-      categoria: "Histórico",
-      imagem:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
-    },
-    {
-      nome: "Roberto Lima",
-      lugar: "Visitou Mirante do Morro Redondo",
-      nota: 5,
-      data: "10/05/2024",
-      texto:
-        "A vista é espetacular. Melhor lugar para ver o pôr do sol na cidade. Voltarei com certeza.",
-      categoria: "Natureza",
-      imagem:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-    },
-    {
-      nome: "Juliana Pereira",
-      lugar: "Visitou Theatro Municipal",
-      nota: 5,
-      data: "08/05/2024",
-      texto:
-        "Experiência maravilhosa! O teatro é lindo e os eventos são de alta qualidade.",
-      categoria: "Cultura",
-      imagem:
-        "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=300&q=80",
-    },
-  ];
+  const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+
+  const [busca, setBusca] = useState("");
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("todas");
+  const [ordenacao, setOrdenacao] = useState("recentes");
+
+  useEffect(() => {
+    async function carregarAvaliacoes() {
+      try {
+        const data = await listarAvaliacoes();
+
+        console.log("Avaliações:", data);
+
+        setAvaliacoes(data);
+      } catch (error) {
+        console.log("Erro ao carregar avaliações:", error);
+        setErro("Erro ao carregar avaliações.");
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarAvaliacoes();
+  }, []);
+
+  function formatarData(data: string) {
+    return new Date(data).toLocaleDateString("pt-BR");
+  }
+
+  const mediaAvaliacoes = useMemo(() => {
+    if (avaliacoes.length === 0) return "0,0";
+
+    const soma = avaliacoes.reduce((total, avaliacao) => {
+      return total + Number(avaliacao.nota || 0);
+    }, 0);
+
+    return (soma / avaliacoes.length).toFixed(1).replace(".", ",");
+  }, [avaliacoes]);
+
+  const contagemNotas = useMemo(() => {
+    return {
+      5: avaliacoes.filter((avaliacao) => avaliacao.nota === 5).length,
+      4: avaliacoes.filter((avaliacao) => avaliacao.nota === 4).length,
+      3: avaliacoes.filter((avaliacao) => avaliacao.nota === 3).length,
+      2: avaliacoes.filter((avaliacao) => avaliacao.nota === 2).length,
+      1: avaliacoes.filter((avaliacao) => avaliacao.nota === 1).length,
+    };
+  }, [avaliacoes]);
+
+  function porcentagemNota(nota: 1 | 2 | 3 | 4 | 5) {
+    if (avaliacoes.length === 0) return 0;
+
+    return (contagemNotas[nota] / avaliacoes.length) * 100;
+  }
+
+  const categorias = useMemo(() => {
+    const lista = avaliacoes
+      .map((avaliacao) => avaliacao.pontoTuristico?.categoria?.nome)
+      .filter(Boolean) as string[];
+
+    return Array.from(new Set(lista));
+  }, [avaliacoes]);
+
+  const avaliacoesFiltradas = useMemo(() => {
+    let resultado = [...avaliacoes];
+
+    if (busca.trim()) {
+      const termo = busca.toLowerCase().trim();
+
+      resultado = resultado.filter((avaliacao) => {
+        return (
+          avaliacao.usuario?.nome.toLowerCase().includes(termo) ||
+          avaliacao.pontoTuristico?.nome.toLowerCase().includes(termo) ||
+          avaliacao.comentario.toLowerCase().includes(termo)
+        );
+      });
+    }
+
+    if (categoriaSelecionada !== "todas") {
+      resultado = resultado.filter(
+        (avaliacao) =>
+          avaliacao.pontoTuristico?.categoria?.nome === categoriaSelecionada
+      );
+    }
+
+    if (ordenacao === "recentes") {
+      resultado.sort(
+        (a, b) =>
+          new Date(b.criadoEm).getTime() - new Date(a.criadoEm).getTime()
+      );
+    }
+
+    if (ordenacao === "melhor") {
+      resultado.sort((a, b) => b.nota - a.nota);
+    }
+
+    if (ordenacao === "menor") {
+      resultado.sort((a, b) => a.nota - b.nota);
+    }
+
+    return resultado;
+  }, [avaliacoes, busca, categoriaSelecionada, ordenacao]);
 
   return (
     <div className="avaliacoes-page">
@@ -56,51 +132,33 @@ function Avaliacoes() {
           <div className="rating-summary">
             <div className="rating-number">
               <span>⭐</span>
-              <strong>4,8</strong>
-              <p>Excelente</p>
-              <small>Baseado em 1.248 avaliações</small>
+              <strong>{mediaAvaliacoes}</strong>
+              <p>
+                {avaliacoes.length > 0 ? "Excelente" : "Sem avaliações"}
+              </p>
+              <small>
+                Baseado em {avaliacoes.length}{" "}
+                {avaliacoes.length === 1 ? "avaliação" : "avaliações"}
+              </small>
             </div>
 
             <div className="rating-bars">
-              <div className="bar-row">
-                <span>5 ★</span>
-                <div className="bar">
-                  <div className="fill fill-5"></div>
-                </div>
-                <small>856</small>
-              </div>
+              {[5, 4, 3, 2, 1].map((nota) => (
+                <div className="bar-row" key={nota}>
+                  <span>{nota} ★</span>
 
-              <div className="bar-row">
-                <span>4 ★</span>
-                <div className="bar">
-                  <div className="fill fill-4"></div>
-                </div>
-                <small>298</small>
-              </div>
+                  <div className="bar">
+                    <div
+                      className="fill"
+                      style={{
+                        width: `${porcentagemNota(nota as 1 | 2 | 3 | 4 | 5)}%`,
+                      }}
+                    ></div>
+                  </div>
 
-              <div className="bar-row">
-                <span>3 ★</span>
-                <div className="bar">
-                  <div className="fill fill-3"></div>
+                  <small>{contagemNotas[nota as 1 | 2 | 3 | 4 | 5]}</small>
                 </div>
-                <small>68</small>
-              </div>
-
-              <div className="bar-row">
-                <span>2 ★</span>
-                <div className="bar">
-                  <div className="fill fill-2"></div>
-                </div>
-                <small>16</small>
-              </div>
-
-              <div className="bar-row">
-                <span>1 ★</span>
-                <div className="bar">
-                  <div className="fill fill-1"></div>
-                </div>
-                <small>10</small>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -108,69 +166,115 @@ function Avaliacoes() {
         <section className="avaliacoes-filter-card">
           <div className="avaliacoes-search">
             <span>🔍</span>
-            <input type="text" placeholder="Buscar avaliações..." />
+            <input
+              type="text"
+              placeholder="Buscar avaliações..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
           </div>
 
           <div className="avaliacoes-filter-box">
             <label>Categoria</label>
-            <select>
-              <option>Todas</option>
-              <option>Histórico</option>
-              <option>Natureza</option>
-              <option>Cultura</option>
-              <option>Gastronomia</option>
+            <select
+              value={categoriaSelecionada}
+              onChange={(e) => setCategoriaSelecionada(e.target.value)}
+            >
+              <option value="todas">Todas</option>
+
+              {categorias.map((categoria) => (
+                <option key={categoria} value={categoria}>
+                  {categoria}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="avaliacoes-filter-box">
             <label>Ordenar por</label>
-            <select>
-              <option>Mais recentes</option>
-              <option>Melhor avaliadas</option>
-              <option>Menor avaliação</option>
+            <select
+              value={ordenacao}
+              onChange={(e) => setOrdenacao(e.target.value)}
+            >
+              <option value="recentes">Mais recentes</option>
+              <option value="melhor">Melhor avaliadas</option>
+              <option value="menor">Menor avaliação</option>
             </select>
           </div>
 
-          <button className="filter-button">⚙ Filtrar</button>
+          <button type="button" className="filter-button">
+            ⚙ Filtrar
+          </button>
         </section>
 
-        <section className="reviews-grid">
-          {avaliacoes.map((avaliacao) => (
-            <article className="review-card" key={avaliacao.nome}>
-              <div className="review-header">
-                <img src={avaliacao.imagem} alt={avaliacao.nome} />
+        {carregando ? (
+          <div className="avaliacoes-empty">
+            <h2>Carregando avaliações...</h2>
+          </div>
+        ) : erro ? (
+          <div className="avaliacoes-empty">
+            <h2>{erro}</h2>
+          </div>
+        ) : avaliacoesFiltradas.length === 0 ? (
+          <div className="avaliacoes-empty">
+            <h2>Nenhuma avaliação encontrada</h2>
+            <p>Tente alterar os filtros ou buscar por outro termo.</p>
+          </div>
+        ) : (
+          <section className="reviews-grid">
+            {avaliacoesFiltradas.map((avaliacao) => (
+              <article className="review-card" key={avaliacao.id}>
+                <div className="review-header">
+                  <img
+                    src={
+                      avaliacao.usuario?.fotoUrl ||
+                      "https://ui-avatars.com/api/?name=Usuario&background=800020&color=fff"
+                    }
+                    alt={avaliacao.usuario?.nome || "Usuário"}
+                  />
 
-                <div>
-                  <h2>{avaliacao.nome}</h2>
-                  <p>{avaliacao.lugar}</p>
+                  <div>
+                    <h2>{avaliacao.usuario?.nome || "Usuário"}</h2>
+                    <p>
+                      Visitou{" "}
+                      {avaliacao.pontoTuristico?.nome ||
+                        "ponto turístico não informado"}
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="review-rating-row">
-                <div className="stars">
-                  {"★".repeat(avaliacao.nota)}
+                <div className="review-rating-row">
+                  <div className="stars">
+                    {"★".repeat(avaliacao.nota)}
+                    {"☆".repeat(5 - avaliacao.nota)}
+                  </div>
+
+                  <span>{formatarData(avaliacao.criadoEm)}</span>
                 </div>
 
-                <span>{avaliacao.data}</span>
-              </div>
+                <p className="review-text">{avaliacao.comentario}</p>
 
-              <p className="review-text">{avaliacao.texto}</p>
+                <span
+                  className={`review-category ${
+                    avaliacao.pontoTuristico?.categoria?.nome
+                      ?.toLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "") || "categoria"
+                  }`}
+                >
+                  {avaliacao.pontoTuristico?.categoria?.nome ||
+                    "Sem categoria"}
+                </span>
+              </article>
+            ))}
+          </section>
+        )}
 
-              <span
-                className={`review-category ${avaliacao.categoria
-                  .toLowerCase()
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "")}`}
-              >
-                {avaliacao.categoria}
-              </span>
-            </article>
-          ))}
-        </section>
-
-        <div className="ver-mais-avaliacoes">
-          <button>Ver mais avaliações</button>
-        </div>
+        {avaliacoesFiltradas.length > 0 && (
+          <div className="ver-mais-avaliacoes">
+            <button type="button">Ver mais avaliações</button>
+          </div>
+        )}
       </main>
 
       <Footer />

@@ -173,7 +173,24 @@
 .ponto-modal-route:hover {
   background: #a3153b;
 }
+.ponto-modal-favorite.favoritado {
+  background: #800020;
+  color: #ffffff;
+  border-color: #800020;
+}
 
+.ponto-modal-favorite:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ponto-modal-favorite-message {
+  width: 100%;
+  margin: 10px 0 0;
+  color: #800020;
+  font-size: 14px;
+  font-weight: 700;
+}
 @media (max-width: 850px) {
   .ponto-modal {
     grid-template-columns: 1fr;

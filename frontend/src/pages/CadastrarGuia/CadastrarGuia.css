@@ -1,0 +1,336 @@
+* {
+  box-sizing: border-box;
+}
+
+.seja-guia-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.seja-guia-main {
+  width: 94%;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 20px 0 60px;
+  flex: 1;
+}
+
+.seja-guia-title-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.seja-guia-title-area h1 {
+  margin: 0 0 14px;
+  color: #800020;
+  font-family: Georgia, serif;
+  font-size: 52px;
+  line-height: 1;
+}
+
+.seja-guia-title-area p {
+  color: #5f6368;
+  max-width: 680px;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.seja-guia-user-box {
+  margin-top: 18px;
+  max-width: 520px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+
+  display: grid;
+  gap: 6px;
+}
+
+.seja-guia-user-box strong {
+  color: #800020;
+  font-size: 18px;
+}
+
+.seja-guia-user-box span {
+  color: #555555;
+  font-size: 14px;
+}
+
+.seja-guia-title-line {
+  width: 230px;
+  height: 2px;
+  background: #9cc9ef;
+  margin-top: 24px;
+  position: relative;
+}
+
+.seja-guia-title-line span {
+  width: 10px;
+  height: 10px;
+  background: #62aee8;
+  display: block;
+  transform: rotate(45deg);
+  position: absolute;
+  left: 50%;
+  top: -4px;
+}
+
+.seja-guia-decoration {
+  color: #800020;
+  opacity: 0.18;
+  flex-shrink: 0;
+}
+
+.seja-guia-card {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+}
+
+.seja-guia-imagem-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seja-guia-preview {
+  width: 100%;
+  height: 250px;
+  border-radius: 14px;
+  background: #f3f4f6;
+  overflow: hidden;
+  border: 1px dashed #c9cdd3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seja-guia-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.seja-guia-placeholder {
+  color: #800020;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  text-align: center;
+  padding: 20px;
+}
+
+.seja-guia-imagem-btn {
+  margin-top: 24px;
+  width: 190px;
+  height: 44px;
+  border: 1px solid #800020;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #800020;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.seja-guia-imagem-btn:hover {
+  background: #f8eaf0;
+}
+
+.seja-guia-imagem-card p {
+  color: #777777;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 16px 0 0;
+}
+
+.seja-guia-form-area {
+  min-width: 0;
+}
+
+.seja-guia-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 30px;
+}
+
+.seja-guia-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.seja-guia-group.full {
+  grid-column: 1 / -1;
+}
+
+.seja-guia-group label {
+  font-size: 15px;
+  font-weight: 800;
+  color: #333333;
+}
+
+.seja-guia-group input,
+.seja-guia-group textarea {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid #d4d7dc;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 15px;
+  outline: none;
+}
+
+.seja-guia-group input {
+  height: 44px;
+  padding: 0 14px;
+}
+
+.seja-guia-group textarea {
+  min-height: 150px;
+  resize: vertical;
+  padding: 14px;
+  line-height: 1.5;
+}
+
+.seja-guia-group input:focus,
+.seja-guia-group textarea:focus {
+  border-color: #800020;
+}
+
+.seja-guia-message {
+  margin-top: 24px;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.seja-guia-message.sucesso {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.seja-guia-message.erro {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.seja-guia-actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.seja-guia-salvar {
+  height: 50px;
+  border-radius: 9px;
+  padding: 0 34px;
+  background: #800020;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.seja-guia-salvar:hover {
+  background: #a3153b;
+}
+
+.seja-guia-salvar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 980px) {
+  .seja-guia-title-area {
+    align-items: flex-start;
+  }
+
+  .seja-guia-card {
+    grid-template-columns: 1fr;
+  }
+
+  .seja-guia-decoration {
+    display: none;
+  }
+
+  .seja-guia-title-area h1 {
+    font-size: 42px;
+  }
+
+  .seja-guia-imagem-card {
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 620px) {
+  .seja-guia-main {
+    width: 92%;
+  }
+
+  .seja-guia-title-area h1 {
+    font-size: 34px;
+  }
+
+  .seja-guia-title-area p {
+    font-size: 14px;
+  }
+
+  .seja-guia-card {
+    padding: 20px;
+  }
+
+  .seja-guia-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seja-guia-actions {
+    justify-content: stretch;
+  }
+
+  .seja-guia-salvar {
+    width: 100%;
+  }
+
+  .seja-guia-title-line {
+    width: 160px;
+  }
+}

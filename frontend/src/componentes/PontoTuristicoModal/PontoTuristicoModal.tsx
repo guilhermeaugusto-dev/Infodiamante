@@ -1,4 +1,10 @@
 import "./PontoTuristicoModal.css";
+import { useEffect, useState } from "react";
+
+import {
+  alternarFavorito,
+  verificarFavorito,
+} from "../../servicos/favoritoService";
 
 type PontoTuristico = {
   id: number;
@@ -27,6 +33,25 @@ type PontoTuristicoModalProps = {
 };
 
 function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
+  const [favoritado, setFavoritado] = useState(false);
+  const [carregandoFavorito, setCarregandoFavorito] = useState(false);
+  const [mensagemFavorito, setMensagemFavorito] = useState("");
+
+  useEffect(() => {
+    async function carregarFavorito() {
+      if (!ponto) return;
+
+      try {
+        const estaFavoritado = await verificarFavorito(ponto.id);
+        setFavoritado(estaFavoritado);
+      } catch (error) {
+        console.log("Erro ao verificar favorito:", error);
+      }
+    }
+
+    carregarFavorito();
+  }, [ponto]);
+
   if (!ponto) return null;
 
   function calcularNota() {
@@ -41,6 +66,28 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
     }, 0);
 
     return (soma / avaliacoes.length).toFixed(1);
+  }
+
+  async function handleFavorito() {
+    if (!ponto) return;
+
+    try {
+      setCarregandoFavorito(true);
+      setMensagemFavorito("");
+
+      const data = await alternarFavorito(ponto.id);
+
+      setFavoritado(data.favoritado);
+      setMensagemFavorito(data.mensagem);
+    } catch (error) {
+      console.log("Erro ao favoritar:", error);
+
+      setMensagemFavorito(
+        error instanceof Error ? error.message : "Erro ao favoritar."
+      );
+    } finally {
+      setCarregandoFavorito(false);
+    }
   }
 
   return (
@@ -104,13 +151,30 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
           </div>
 
           <div className="ponto-modal-actions">
-            <button type="button" className="ponto-modal-favorite">
-              ♡ Adicionar aos favoritos
+            <button
+              type="button"
+              className={`ponto-modal-favorite ${
+                favoritado ? "favoritado" : ""
+              }`}
+              onClick={handleFavorito}
+              disabled={carregandoFavorito}
+            >
+              {carregandoFavorito
+                ? "Salvando..."
+                : favoritado
+                ? "♥ Remover dos favoritos"
+                : "♡ Adicionar aos favoritos"}
             </button>
 
             <button type="button" className="ponto-modal-route">
               + Adicionar ao roteiro
             </button>
+
+            {mensagemFavorito && (
+              <p className="ponto-modal-favorite-message">
+                {mensagemFavorito}
+              </p>
+            )}
           </div>
         </div>
       </div>

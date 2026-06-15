@@ -134,7 +134,66 @@ async function loginUsuario(req, res) {
 }
 
 async function buscarUsuarioLogado(req, res) {
-  return res.status(200).json(req.usuario);
+  try {
+    const usuarioId = req.usuario.id;
+
+    const usuario = await prisma.usuario.findUnique({
+      where: {
+        id: usuarioId,
+      },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        telefone: true,
+        cidade: true,
+        bio: true,
+        fotoUrl: true,
+        tipo: true,
+
+        guia: {
+          select: {
+            id: true,
+            usuarioId: true,
+            biografia: true,
+            especialidade: true,
+            idiomas: true,
+            precoPorHora: true,
+            anosExperiencia: true,
+            verificado: true,
+            disponivel: true,
+            imagemUrl: true,
+          },
+        },
+
+        roteiros: true,
+        avaliacoes: true,
+        favoritos: {
+          include: {
+            pontoTuristico: true,
+          },
+        },
+        agendamentos: true,
+      },
+    });
+
+    if (!usuario) {
+      return res.status(404).json({
+        mensagem: "Usuário não encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      usuario,
+    });
+  } catch (error) {
+    console.log("Erro ao buscar usuário logado:", error);
+
+    return res.status(500).json({
+      mensagem: "Erro ao buscar usuário logado.",
+      erro: error.message,
+    });
+  }
 }
 
 

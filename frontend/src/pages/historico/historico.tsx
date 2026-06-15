@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Search,
-  MapPin,
   Map as MapIcon,
   Star,
   Calendar,
@@ -35,6 +34,7 @@ export default function Historico() {
     avaliacoes.length === 0 &&
     favoritos.length === 0 &&
     agendamentos.length === 0;
+    
 
   function renderizarConteudo() {
     if (activeTab === "todos") {
@@ -150,14 +150,7 @@ export default function Historico() {
         </section>
 
         <section className="historico-tabs">
-          <button
-            type="button"
-            onClick={() => setActiveTab("todos")}
-            className={activeTab === "todos" ? "active" : ""}
-          >
-            <MapPin className="icon-sm" />
-            Todos
-          </button>
+    
 
           <button
             type="button"

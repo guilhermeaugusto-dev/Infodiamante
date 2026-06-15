@@ -10,6 +10,8 @@ import PublicRoute from "./routes/PublicRoute";
 import Configuracoes from "./pages/Configuracoes/Configuracoes";
 import Historico from "./pages/historico/historico";
 import CadastrarPontoTuristico from "./pages/CadastrarPontoTuristico/CadastrarPontoTuristico";
+import CriarGuia from "./pages/CadastrarGuia/CadastrarGuia";
+import PainelGuia from "./pages/PainelGuia/PainelGuia";
 
 function App() {
   return (
@@ -39,6 +41,9 @@ function App() {
       <Route path="/configuracoes" element={<Configuracoes />} />
       <Route path="/historico" element={<Historico />} />
       <Route path="/admin/pontos-turisticos/novo" element={<CadastrarPontoTuristico />} />
+      <Route path="/seja-guia" element={<CriarGuia />} />
+      <Route path="/painel-guia" element={<PainelGuia />} />
+      
     </Routes>
   );
 }

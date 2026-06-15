@@ -7,11 +7,12 @@ function UserMenuModal() {
   const navigate = useNavigate();
   const [aberto, setAberto] = useState(false);
   const { usuario, logout } = useUser();
-
   const nomeUsuario = usuario?.nome;
   const primeiroNome = nomeUsuario ? nomeUsuario.split(" ")[0] : "Usuário";
   const fotoUrl = usuario?.fotoUrl;
   const inicial = primeiroNome.charAt(0).toUpperCase();
+  console.log("Usuário no menu:", usuario);
+  console.log("Guia do usuário:", usuario?.GUIA)
 
 
   return (
@@ -21,6 +22,7 @@ function UserMenuModal() {
   className="user-menu-button"
   onClick={() => setAberto(!aberto)}
 >
+  
   {fotoUrl ? (
     <img src={fotoUrl} alt="Foto do usuário" className="user-menu-photo" />
   ) : (
@@ -55,12 +57,30 @@ function UserMenuModal() {
   Histórico
 </button>
 {usuario?.tipo === "ADMIN" && (
+  <>
+    <button
+      type="button"
+      className="user-modal-option"
+      onClick={() => {
+        setAberto(false);
+        navigate("/admin/pontos-turisticos/novo");
+      }}
+    >
+      Cadastrar Ponto Turístico
+    </button>
+
+  </>
+)}
+{(usuario?.guia) && (
   <button
     type="button"
     className="user-modal-option"
-    onClick={() => navigate("/admin/pontos-turisticos/novo")}
+    onClick={() => {
+      setAberto(false);
+      navigate("/painel-guia");
+    }}
   >
-    Cadastrar Ponto Turístico
+    Painel do Guia
   </button>
 )}
 

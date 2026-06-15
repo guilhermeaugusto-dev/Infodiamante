@@ -32,7 +32,7 @@ model Usuario {
   id        Int         @id @default(autoincrement())
   nome      String
   email     String      @unique
-  senha     String
+  senha     String      @default("")
   bio       String?
   telefone  String?
   cidade    String?
@@ -101,6 +101,7 @@ model PontoTuristico {
 model Guia {
   id              Int      @id @default(autoincrement())
   usuarioId       Int      @unique
+
   biografia       String?  @db.Text
   especialidade   String
   idiomas         String?
@@ -108,7 +109,8 @@ model Guia {
   anosExperiencia Int?
   verificado      Boolean  @default(false)
   disponivel      Boolean  @default(true)
-  imagemUrl String? @db.LongText
+  imagemUrl       String?  @db.LongText
+
   usuario Usuario @relation(fields: [usuarioId], references: [id])
 
   agendamentos AgendamentoGuia[]

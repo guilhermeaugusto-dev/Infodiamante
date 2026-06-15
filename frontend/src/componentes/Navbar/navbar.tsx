@@ -37,11 +37,8 @@ function Navbar() {
         <NavLink to="/guias">Guias</NavLink>
         <NavLink to="/promocoes">Promoções</NavLink>
         <NavLink to="/avaliacoes">Avaliações</NavLink>
-         {isAdmin && (
-    <NavLink to="/admin/pontos-turisticos/novo">
-      Cadastrar Ponto
-    </NavLink>
-  )}
+        <NavLink to="/seja-guia">Seja um Guia</NavLink>
+
       </nav>
 
       {!usuarioLogado ? (
