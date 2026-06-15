@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ImagePlus, MapPin, Save, Landmark, CheckCircle } from "lucide-react";
+import { ImagePlus, Save, Landmark, CheckCircle } from "lucide-react";
 
 import Navbar from "../../componentes/Navbar/navbar";
 import Footer from "../../componentes/Footer/footer";
@@ -17,6 +17,16 @@ function CadastrarPontoTuristico() {
   const [longitude, setLongitude] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
   const [regiaoId, setRegiaoId] = useState("");
+
+  const [valorIngresso, setValorIngresso] = useState("");
+  const [acessivel, setAcessivel] = useState(false);
+  const [tipoAcessibilidade, setTipoAcessibilidade] = useState("");
+  const [observacoesAcessibilidade, setObservacoesAcessibilidade] =
+    useState("");
+
+  const [horarioAbertura, setHorarioAbertura] = useState("");
+  const [horarioFechamento, setHorarioFechamento] = useState("");
+
   const [imagemArquivo, setImagemArquivo] = useState<File | null>(null);
   const [previewImagem, setPreviewImagem] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -53,6 +63,12 @@ function CadastrarPontoTuristico() {
         longitude,
         categoriaId,
         regiaoId,
+        valorIngresso,
+        acessivel,
+        tipoAcessibilidade,
+        observacoesAcessibilidade,
+        horarioAbertura,
+        horarioFechamento,
         imagemArquivo,
       });
 
@@ -67,6 +83,12 @@ function CadastrarPontoTuristico() {
       setLongitude("");
       setCategoriaId("");
       setRegiaoId("");
+      setValorIngresso("");
+      setAcessivel(false);
+      setTipoAcessibilidade("");
+      setObservacoesAcessibilidade("");
+      setHorarioAbertura("");
+      setHorarioFechamento("");
       setImagemArquivo(null);
       setPreviewImagem("");
     } catch (error) {
@@ -221,6 +243,85 @@ function CadastrarPontoTuristico() {
                   placeholder="Opcional"
                 />
               </div>
+
+              <div className="cadastro-ponto-group">
+                <label>Valor do ingresso</label>
+                <input
+                  type="number"
+                  value={valorIngresso}
+                  onChange={(e) => setValorIngresso(e.target.value)}
+                  placeholder="Ex: 20.00"
+                  step="0.01"
+                />
+              </div>
+
+              <div className="cadastro-ponto-group">
+                <label>Horário de abertura</label>
+                <input
+                  type="time"
+                  value={horarioAbertura}
+                  onChange={(e) => setHorarioAbertura(e.target.value)}
+                />
+              </div>
+
+              <div className="cadastro-ponto-group">
+                <label>Horário de fechamento</label>
+                <input
+                  type="time"
+                  value={horarioFechamento}
+                  onChange={(e) => setHorarioFechamento(e.target.value)}
+                />
+              </div>
+
+              <div className="cadastro-ponto-group">
+                <label>Possui acessibilidade?</label>
+                <select
+                  value={acessivel ? "true" : "false"}
+                  onChange={(e) => setAcessivel(e.target.value === "true")}
+                >
+                  <option value="false">Não</option>
+                  <option value="true">Sim</option>
+                </select>
+              </div>
+
+              {acessivel && (
+                <>
+                  <div className="cadastro-ponto-group">
+                    <label>Tipo de acessibilidade</label>
+                    <select
+                      value={tipoAcessibilidade}
+                      onChange={(e) => setTipoAcessibilidade(e.target.value)}
+                    >
+                      <option value="">Selecione</option>
+                      <option value="Cadeirante">Cadeirante</option>
+                      <option value="Mobilidade reduzida">
+                        Mobilidade reduzida
+                      </option>
+                      <option value="Deficiência visual">
+                        Deficiência visual
+                      </option>
+                      <option value="Deficiência auditiva">
+                        Deficiência auditiva
+                      </option>
+                      <option value="TEA / Neurodivergente">
+                        TEA / Neurodivergente
+                      </option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                  </div>
+
+                  <div className="cadastro-ponto-group full">
+                    <label>Observações de acessibilidade</label>
+                    <textarea
+                      value={observacoesAcessibilidade}
+                      onChange={(e) =>
+                        setObservacoesAcessibilidade(e.target.value)
+                      }
+                      placeholder="Ex: possui rampa, banheiro adaptado, entrada sem escadas..."
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             {mensagem && (

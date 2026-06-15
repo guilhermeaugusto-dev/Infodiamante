@@ -35,8 +35,7 @@ function Navbar() {
         <NavLink to="/pontos-turisticos">Pontos Turísticos</NavLink>
         <NavLink to="/criarRoteiro">Criar Roteiro</NavLink>
         <NavLink to="/guias">Guias</NavLink>
-        <NavLink to="/promocoes">Promoções</NavLink>
-        <NavLink to="/avaliacoes">Avaliações</NavLink>
+        <NavLink to="/seja-parceiro">Seja Parceiro</NavLink>
         <NavLink to="/seja-guia">Seja um Guia</NavLink>
 
       </nav>

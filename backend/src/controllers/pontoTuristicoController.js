@@ -1,6 +1,4 @@
 const prisma = require("../services/prisma");
-const fs = require("fs");
-
 
 async function listarPontosTuristicos(req, res) {
   try {
@@ -90,6 +88,12 @@ async function criarPontoTuristico(req, res) {
       longitude,
       categoriaId,
       regiaoId,
+      valorIngresso,
+      acessivel,
+      tipoAcessibilidade,
+      observacoesAcessibilidade,
+      horarioAbertura,
+      horarioFechamento,
     } = req.body;
 
     if (!nome || !descricao || !cidade || !estado || !categoriaId) {
@@ -99,14 +103,44 @@ async function criarPontoTuristico(req, res) {
       });
     }
 
-   let imagemUrl = req.body.imagemUrl || null;
+    let latitudeConvertida = null;
+    let longitudeConvertida = null;
 
-if (req.file) {
-  const imagemBuffer = fs.readFileSync(req.file.path);
-  const imagemBase64 = imagemBuffer.toString("base64");
+    if (latitude) {
+      latitudeConvertida = Number(latitude);
 
-  imagemUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
-}
+      if (
+        Number.isNaN(latitudeConvertida) ||
+        latitudeConvertida < -90 ||
+        latitudeConvertida > 90
+      ) {
+        return res.status(400).json({
+          mensagem: "Latitude inválida. Use um valor entre -90 e 90.",
+        });
+      }
+    }
+
+    if (longitude) {
+      longitudeConvertida = Number(longitude);
+
+      if (
+        Number.isNaN(longitudeConvertida) ||
+        longitudeConvertida < -180 ||
+        longitudeConvertida > 180
+      ) {
+        return res.status(400).json({
+          mensagem: "Longitude inválida. Use um valor entre -180 e 180.",
+        });
+      }
+    }
+
+    let imagemUrl = req.body.imagemUrl || null;
+
+    if (req.file) {
+      const imagemBase64 = req.file.buffer.toString("base64");
+      imagemUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
+    }
+
     const ponto = await prisma.pontoTuristico.create({
       data: {
         nome,
@@ -114,11 +148,21 @@ if (req.file) {
         endereco: endereco || null,
         cidade,
         estado,
-        latitude: latitude ? Number(latitude) : null,
-        longitude: longitude ? Number(longitude) : null,
+        latitude: latitudeConvertida,
+        longitude: longitudeConvertida,
         imagemUrl,
+
         categoriaId: Number(categoriaId),
         regiaoId: regiaoId ? Number(regiaoId) : null,
+
+        valorIngresso: valorIngresso ? Number(valorIngresso) : null,
+
+        acessivel: acessivel === "true" || acessivel === true,
+        tipoAcessibilidade: tipoAcessibilidade || null,
+        observacoesAcessibilidade: observacoesAcessibilidade || null,
+
+        horarioAbertura: horarioAbertura || null,
+        horarioFechamento: horarioFechamento || null,
       },
       include: {
         categoria: true,
@@ -136,6 +180,7 @@ if (req.file) {
     return res.status(500).json({
       mensagem: "Erro ao criar ponto turístico.",
       erro: error.message,
+      codigo: error.code,
     });
   }
 }
@@ -156,6 +201,12 @@ async function atualizarPontoTuristico(req, res) {
       ativo,
       categoriaId,
       regiaoId,
+      valorIngresso,
+      acessivel,
+      tipoAcessibilidade,
+      observacoesAcessibilidade,
+      horarioAbertura,
+      horarioFechamento,
     } = req.body;
 
     const pontoExiste = await prisma.pontoTuristico.findUnique({
@@ -170,14 +221,45 @@ async function atualizarPontoTuristico(req, res) {
       });
     }
 
-   let novaImagemUrl = imagemUrl;
+    let latitudeConvertida;
+    let longitudeConvertida;
 
-if (req.file) {
-  const imagemBuffer = fs.readFileSync(req.file.path);
-  const imagemBase64 = imagemBuffer.toString("base64");
+    if (latitude !== undefined) {
+      latitudeConvertida = latitude ? Number(latitude) : null;
 
-  novaImagemUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
-}
+      if (
+        latitudeConvertida !== null &&
+        (Number.isNaN(latitudeConvertida) ||
+          latitudeConvertida < -90 ||
+          latitudeConvertida > 90)
+      ) {
+        return res.status(400).json({
+          mensagem: "Latitude inválida. Use um valor entre -90 e 90.",
+        });
+      }
+    }
+
+    if (longitude !== undefined) {
+      longitudeConvertida = longitude ? Number(longitude) : null;
+
+      if (
+        longitudeConvertida !== null &&
+        (Number.isNaN(longitudeConvertida) ||
+          longitudeConvertida < -180 ||
+          longitudeConvertida > 180)
+      ) {
+        return res.status(400).json({
+          mensagem: "Longitude inválida. Use um valor entre -180 e 180.",
+        });
+      }
+    }
+
+    let novaImagemUrl = imagemUrl;
+
+    if (req.file) {
+      const imagemBase64 = req.file.buffer.toString("base64");
+      novaImagemUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
+    }
 
     const pontoAtualizado = await prisma.pontoTuristico.update({
       where: {
@@ -189,17 +271,53 @@ if (req.file) {
         ...(endereco !== undefined && { endereco: endereco || null }),
         ...(cidade !== undefined && { cidade }),
         ...(estado !== undefined && { estado }),
+
         ...(latitude !== undefined && {
-          latitude: latitude ? Number(latitude) : null,
+          latitude: latitudeConvertida,
         }),
+
         ...(longitude !== undefined && {
-          longitude: longitude ? Number(longitude) : null,
+          longitude: longitudeConvertida,
         }),
-        ...(novaImagemUrl !== undefined && { imagemUrl: novaImagemUrl }),
-        ...(ativo !== undefined && { ativo: ativo === "true" || ativo === true }),
-        ...(categoriaId !== undefined && { categoriaId: Number(categoriaId) }),
+
+        ...(novaImagemUrl !== undefined && {
+          imagemUrl: novaImagemUrl,
+        }),
+
+        ...(ativo !== undefined && {
+          ativo: ativo === "true" || ativo === true,
+        }),
+
+        ...(categoriaId !== undefined && {
+          categoriaId: Number(categoriaId),
+        }),
+
         ...(regiaoId !== undefined && {
           regiaoId: regiaoId ? Number(regiaoId) : null,
+        }),
+
+        ...(valorIngresso !== undefined && {
+          valorIngresso: valorIngresso ? Number(valorIngresso) : null,
+        }),
+
+        ...(acessivel !== undefined && {
+          acessivel: acessivel === "true" || acessivel === true,
+        }),
+
+        ...(tipoAcessibilidade !== undefined && {
+          tipoAcessibilidade: tipoAcessibilidade || null,
+        }),
+
+        ...(observacoesAcessibilidade !== undefined && {
+          observacoesAcessibilidade: observacoesAcessibilidade || null,
+        }),
+
+        ...(horarioAbertura !== undefined && {
+          horarioAbertura: horarioAbertura || null,
+        }),
+
+        ...(horarioFechamento !== undefined && {
+          horarioFechamento: horarioFechamento || null,
         }),
       },
       include: {
@@ -218,6 +336,7 @@ if (req.file) {
     return res.status(500).json({
       mensagem: "Erro ao atualizar ponto turístico.",
       erro: error.message,
+      codigo: error.code,
     });
   }
 }

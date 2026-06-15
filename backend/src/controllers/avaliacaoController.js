@@ -339,11 +339,45 @@ async function deletarAvaliacao(req, res) {
     });
   }
 }
+async function listarMinhasAvaliacoes(req, res) {
+  try {
+    const usuarioId = req.usuario.id;
+
+    const avaliacoes = await prisma.avaliacao.findMany({
+      where: {
+        usuarioId,
+      },
+      include: {
+        pontoTuristico: {
+          include: {
+            categoria: true,
+            regiao: true,
+          },
+        },
+      },
+      orderBy: {
+        criadoEm: "desc",
+      },
+    });
+
+    return res.status(200).json({
+      avaliacoes,
+    });
+  } catch (error) {
+    console.log("Erro ao listar minhas avaliações:", error);
+
+    return res.status(500).json({
+      mensagem: "Erro ao listar suas avaliações.",
+      erro: error.message,
+    });
+  }
+}
 
 module.exports = {
   listarAvaliacoes,
   buscarAvaliacaoPorId,
   listarAvaliacoesPorPonto,
+  listarMinhasAvaliacoes,
   criarAvaliacao,
   atualizarAvaliacao,
   deletarAvaliacao,

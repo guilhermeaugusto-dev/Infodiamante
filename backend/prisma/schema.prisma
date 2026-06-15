@@ -84,6 +84,12 @@ model PontoTuristico {
   ativo     Boolean @default(true)
   categoriaId Int
   regiaoId    Int?
+  valorIngresso Decimal? @db.Decimal(10, 2)
+  acessivel Boolean @default(false)
+  tipoAcessibilidade String?
+  observacoesAcessibilidade String? @db.Text
+  horarioAbertura String?
+horarioFechamento String?
 
   categoria Categoria @relation(fields: [categoriaId], references: [id])
   regiao    Regiao?   @relation(fields: [regiaoId], references: [id])
@@ -152,6 +158,7 @@ model Roteiro {
   status             StatusRoteiro @default(RASCUNHO)
 
   usuario Usuario @relation(fields: [usuarioId], references: [id])
+
 
   pontos PontoDoRoteiro[]
 

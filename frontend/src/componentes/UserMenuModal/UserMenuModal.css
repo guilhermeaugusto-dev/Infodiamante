@@ -1,12 +1,23 @@
 .user-menu {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Botão da foto */
 .user-menu-button {
-  width: 58px;
-  height: 58px;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+
   border-radius: 50%;
   border: none;
-  padding: 0;
+  padding: 0 !important;
+  margin: 0;
   background: transparent;
   cursor: pointer;
   overflow: hidden;
@@ -14,19 +25,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  transition: transform 0.2s ease;
 }
 
+.user-menu-button:hover {
+  transform: scale(1.05);
+}
 
+/* Imagem do usuário */
 .user-menu-photo {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  display: block;
-  object-fit: cover;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+
+  border-radius: 50% !important;
+  display: block !important;
+  object-fit: cover !important;
 }
+
+/* Caso não tenha foto */
 .user-menu-initial {
-  width: 100%;
-  height: 100%;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+
   border-radius: 50%;
   background: #5b1238;
   color: #ffffff;
@@ -35,29 +62,21 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
 }
-.user-menu-button:hover {
-  transform: scale(1.05);
-}
-.user-icon {
-  font-size: 24px;
-}
-.user-icon {
-  font-size: 18px;
-}
 
+/* Modal */
 .user-modal {
   position: absolute;
-  top: 52px;
+  top: 64px;
   right: 0;
   width: 220px;
   background: white;
   border-radius: 16px;
   padding: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-  z-index: 999;
+  z-index: 9999;
 }
 
 .user-modal-header {
@@ -72,12 +91,16 @@
 .user-modal-icon {
   width: 36px;
   height: 36px;
+  min-width: 36px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background:white ;
+
+  background: #5b1238;
   color: white;
   border-radius: 50%;
+  font-size: 18px;
 }
 
 .user-modal-header strong {

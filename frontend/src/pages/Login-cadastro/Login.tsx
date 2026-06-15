@@ -36,13 +36,13 @@ function Login() {
       setUsuario(data.usuario);
       navigate("/pontos-turisticos");
     
-      console.log("Login realizado com sucesso:", data);
+   
     } catch (error) {
       console.log("Erro ao fazer login:", error);
+      alert(error instanceof Error ? error.message : "Erro desconhecido");
 
     }
   }
-console.log("Token salvo:", localStorage.getItem("token"));
   return (
     <div className="login-page">
       <Navbar />

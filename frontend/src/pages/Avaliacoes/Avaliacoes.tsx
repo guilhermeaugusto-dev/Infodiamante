@@ -270,7 +270,7 @@ function Avaliacoes() {
           </section>
         )}
 
-        {avaliacoesFiltradas.length > 0 && (
+        {avaliacoesFiltradas.length > 10 && (
           <div className="ver-mais-avaliacoes">
             <button type="button">Ver mais avaliações</button>
           </div>

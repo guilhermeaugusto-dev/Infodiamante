@@ -112,6 +112,7 @@ async function verificarFavorito(req, res) {
     const usuarioId = req.usuario.id;
     const { pontoTuristicoId } = req.params;
 
+    
     const favorito = await prisma.favorito.findUnique({
       where: {
         usuarioId_pontoTuristicoId: {

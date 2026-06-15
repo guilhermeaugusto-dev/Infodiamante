@@ -138,14 +138,14 @@ async function criarMeuGuia(req, res) {
             telefone: true,
             cidade: true,
             fotoUrl: true,
-            roteiros: true,
+            tipo: true,
           },
         },
       },
     });
 
     return res.status(201).json({
-      mensagem: "Solicitação para ser guia enviada com sucesso.",
+      mensagem: "Cadastro de guia enviado com sucesso.",
       guia,
     });
   } catch (error) {
@@ -157,7 +157,6 @@ async function criarMeuGuia(req, res) {
     });
   }
 }
-
 async function atualizarGuiaAdmin(req, res) {
   try {
     const { id } = req.params;

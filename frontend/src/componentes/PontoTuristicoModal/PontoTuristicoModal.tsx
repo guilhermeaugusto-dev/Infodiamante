@@ -1,6 +1,6 @@
 import "./PontoTuristicoModal.css";
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
   alternarFavorito,
   verificarFavorito,
@@ -14,15 +14,25 @@ type PontoTuristico = {
   cidade: string;
   estado: string;
   imagemUrl?: string | null;
+
+  valorIngresso?: string | number | null;
+  acessivel?: boolean;
+  tipoAcessibilidade?: string | null;
+  observacoesAcessibilidade?: string | null;
+  horarioAbertura?: string | null;
+  horarioFechamento?: string | null;
+
   categoria?: {
     id: number;
     nome: string;
     cor?: string | null;
   } | null;
+
   regiao?: {
     id: number;
     nome: string;
   } | null;
+
   avaliacoes?: any[];
   favoritos?: any[];
 };
@@ -32,10 +42,12 @@ type PontoTuristicoModalProps = {
   onFechar: () => void;
 };
 
+
 function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
   const [favoritado, setFavoritado] = useState(false);
   const [carregandoFavorito, setCarregandoFavorito] = useState(false);
   const [mensagemFavorito, setMensagemFavorito] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function carregarFavorito() {
@@ -55,7 +67,7 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
   if (!ponto) return null;
 
   function calcularNota() {
-    const avaliacoes = ponto?.avaliacoes || [];
+    const avaliacoes = ponto.avaliacoes || [];
 
     if (avaliacoes.length === 0) {
       return "0.0";
@@ -66,6 +78,33 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
     }, 0);
 
     return (soma / avaliacoes.length).toFixed(1);
+  }
+
+  function formatarMoeda(valor?: string | number | null) {
+    if (valor === null || valor === undefined || valor === "") {
+      return "Gratuito ou não informado";
+    }
+
+    return Number(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  function formatarHorario() {
+    if (ponto.horarioAbertura && ponto.horarioFechamento) {
+      return `${ponto.horarioAbertura} às ${ponto.horarioFechamento}`;
+    }
+
+    if (ponto.horarioAbertura && !ponto.horarioFechamento) {
+      return `Abre às ${ponto.horarioAbertura}`;
+    }
+
+    if (!ponto.horarioAbertura && ponto.horarioFechamento) {
+      return `Fecha às ${ponto.horarioFechamento}`;
+    }
+
+    return "Horário não informado";
   }
 
   async function handleFavorito() {
@@ -122,6 +161,11 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
             <span>📍 {ponto.regiao?.nome || ponto.cidade}</span>
             <span>⭐ {calcularNota()}</span>
             <span>💬 {ponto.avaliacoes?.length || 0} avaliações</span>
+            <span>💰 {formatarMoeda(ponto.valorIngresso)}</span>
+            <span>🕒 {formatarHorario()}</span>
+            <span>
+              ♿ {ponto.acessivel ? "Acessível" : "Não acessível"}
+            </span>
           </div>
 
           <p className="ponto-modal-description">{ponto.descricao}</p>
@@ -138,6 +182,42 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
                 {ponto.cidade} - {ponto.estado}
               </p>
             </div>
+
+            <div>
+              <strong>Valor do ingresso</strong>
+              <p>{formatarMoeda(ponto.valorIngresso)}</p>
+            </div>
+
+            <div>
+              <strong>Horário de funcionamento</strong>
+              <p>{formatarHorario()}</p>
+            </div>
+
+            <div>
+              <strong>Acessibilidade</strong>
+              <p>
+                {ponto.acessivel
+                  ? "Sim, este ponto possui acessibilidade."
+                  : "Não, este ponto não é acessível."}
+              </p>
+            </div>
+
+            {ponto.acessivel && (
+              <>
+                <div>
+                  <strong>Tipo de acessibilidade</strong>
+                  <p>{ponto.tipoAcessibilidade}</p>
+                </div>
+
+                <div>
+                  <strong>Observações de acessibilidade</strong>
+                  <p>
+                    {ponto.observacoesAcessibilidade ||
+                      "Nenhuma observação informada."}
+                  </p>
+                </div>
+              </>
+            )}
 
             <div>
               <strong>Categoria</strong>
@@ -166,9 +246,16 @@ function PontoTuristicoModal({ ponto, onFechar }: PontoTuristicoModalProps) {
                 : "♡ Adicionar aos favoritos"}
             </button>
 
-            <button type="button" className="ponto-modal-route">
-              + Adicionar ao roteiro
-            </button>
+           <button
+  type="button"
+  className="ponto-modal-route"
+  onClick={() => {
+    onFechar();
+    navigate(`/avaliar-ponto/${ponto.id}`);
+  }}
+>
+  Avaliar
+</button>
 
             {mensagemFavorito && (
               <p className="ponto-modal-favorite-message">

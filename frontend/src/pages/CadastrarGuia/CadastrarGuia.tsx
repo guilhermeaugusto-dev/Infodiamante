@@ -11,6 +11,8 @@ import "./CadastrarGuia.css";
 function SejaGuia() {
   const { usuario, carregarUsuario } = useUser();
 
+  const [aceitouTermos, setAceitouTermos] = useState("");
+
   const [biografia, setBiografia] = useState("");
   const [especialidade, setEspecialidade] = useState("");
   const [idiomas, setIdiomas] = useState("");
@@ -40,42 +42,51 @@ function SejaGuia() {
       return;
     }
 
-   try {
-  setCarregando(true);
-  setMensagem("");
+    if (aceitouTermos !== "sim") {
+      setMensagem("Você precisa aceitar os termos para enviar a solicitação.");
+      return;
+    }
 
-  await cadastrarMeuGuia({
-    biografia,
-    especialidade,
-    idiomas,
-    precoPorHora,
-    anosExperiencia,
-    imagemArquivo,
-  });
+    try {
+      setCarregando(true);
+      setMensagem("");
 
-  await carregarUsuario();
+      await cadastrarMeuGuia({
+        biografia,
+        especialidade,
+        idiomas,
+        precoPorHora,
+        anosExperiencia,
+        imagemArquivo,
+      });
 
-  setMensagem(
-    "Cadastro enviado com sucesso! Agora você possui um perfil de guia."
-  );
+      await carregarUsuario();
 
-  setBiografia("");
-  setEspecialidade("");
-  setIdiomas("");
-  setPrecoPorHora("");
-  setAnosExperiencia("");
-  setImagemArquivo(null);
-  setPreviewImagem("");
-} catch (error) {
-  console.log("Erro ao solicitar cadastro como guia:", error);
-  setMensagem(
-    error instanceof Error
-      ? error.message
-      : "Erro ao solicitar cadastro como guia."
-  );
-} finally {
-  setCarregando(false);
-}
+      setMensagem(
+        "Cadastro enviado com sucesso! Agora você possui um perfil de guia."
+      );
+
+      setBiografia("");
+      setEspecialidade("");
+      setIdiomas("");
+      setPrecoPorHora("");
+      setAnosExperiencia("");
+      setImagemArquivo(null);
+      setPreviewImagem("");
+      setAceitouTermos("");
+    } catch (error) {
+      console.log("Erro ao solicitar cadastro como guia:", error);
+
+      setMensagem(
+        error instanceof Error
+          ? error.message
+          : "Erro ao solicitar cadastro como guia."
+      );
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   return (
     <div className="seja-guia-page">
       <Navbar />
@@ -191,6 +202,52 @@ function SejaGuia() {
               </div>
             </div>
 
+            <div className="termos-guia-box">
+              <h3>Termos da plataforma</h3>
+
+              <p>
+                Ao se cadastrar como guia turístico, você concorda que a
+                plataforma receberá <strong>30% do valor total</strong> de cada
+                serviço contratado pelo site.
+              </p>
+
+              <p>
+                Os outros <strong>70%</strong> ficam para o guia responsável
+                pelo serviço.
+              </p>
+
+              <div className="termos-guia-opcoes">
+                <label className="termos-opcao">
+                  <input
+                    type="radio"
+                    name="aceitouTermos"
+                    value="sim"
+                    checked={aceitouTermos === "sim"}
+                    onChange={(e) => setAceitouTermos(e.target.value)}
+                  />
+                  Sim, concordo com os termos.
+                </label>
+
+                <label className="termos-opcao">
+                  <input
+                    type="radio"
+                    name="aceitouTermos"
+                    value="nao"
+                    checked={aceitouTermos === "nao"}
+                    onChange={(e) => setAceitouTermos(e.target.value)}
+                  />
+                  Não concordo com os termos.
+                </label>
+              </div>
+
+              {aceitouTermos === "nao" && (
+                <p className="termos-aviso">
+                  Para enviar a solicitação, é necessário aceitar os termos da
+                  plataforma.
+                </p>
+              )}
+            </div>
+
             {mensagem && (
               <div
                 className={
@@ -207,7 +264,7 @@ function SejaGuia() {
               <button
                 type="submit"
                 className="seja-guia-salvar"
-                disabled={carregando}
+                disabled={carregando || aceitouTermos !== "sim"}
               >
                 <Save size={20} />
                 {carregando ? "Enviando..." : "Enviar solicitação"}

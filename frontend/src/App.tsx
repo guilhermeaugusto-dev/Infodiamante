@@ -12,6 +12,12 @@ import Historico from "./pages/historico/historico";
 import CadastrarPontoTuristico from "./pages/CadastrarPontoTuristico/CadastrarPontoTuristico";
 import CriarGuia from "./pages/CadastrarGuia/CadastrarGuia";
 import PainelGuia from "./pages/PainelGuia/PainelGuia";
+import MapaRoteiro from "./componentes/MapaRoteiro/MapaRoteiro";
+import AvaliarPonto from "./pages/AvaliarPonto/AvaliarPonto";
+import SejaParceiro from "./pages/SejaParceiro/SejaParceiro";
+
+
+
 
 function App() {
   return (
@@ -43,7 +49,9 @@ function App() {
       <Route path="/admin/pontos-turisticos/novo" element={<CadastrarPontoTuristico />} />
       <Route path="/seja-guia" element={<CriarGuia />} />
       <Route path="/painel-guia" element={<PainelGuia />} />
-      
+      <Route path="/mapa-roteiro" element={<MapaRoteiro />} />
+      <Route path="/avaliar-ponto/:pontoId" element={<AvaliarPonto />} />
+      <Route path="/seja-parceiro" element={<SejaParceiro />} />
     </Routes>
   );
 }

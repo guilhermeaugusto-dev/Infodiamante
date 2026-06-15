@@ -1,5 +1,5 @@
 type DadosPontoTuristico = {
-  nome: string;
+   nome: string;
   descricao: string;
   endereco: string;
   cidade: string;
@@ -8,6 +8,14 @@ type DadosPontoTuristico = {
   longitude: string;
   categoriaId: string;
   regiaoId: string;
+
+  valorIngresso: string;
+  acessivel: boolean;
+  tipoAcessibilidade: string;
+  observacoesAcessibilidade: string;
+  horarioAbertura: string;
+  horarioFechamento: string;
+
   imagemArquivo: File | null;
 };
 
@@ -28,6 +36,13 @@ export function cadastrarPontoTuristico(dados: DadosPontoTuristico) {
   formData.append("latitude", dados.latitude);
   formData.append("longitude", dados.longitude);
   formData.append("categoriaId", dados.categoriaId);
+  formData.append("regiaoId", dados.regiaoId);
+  formData.append("valorIngresso", dados.valorIngresso);
+  formData.append("acessivel", dados.acessivel.toString());
+  formData.append("tipoAcessibilidade", dados.tipoAcessibilidade);
+  formData.append("observacoesAcessibilidade", dados.observacoesAcessibilidade);
+  formData.append("horarioAbertura", dados.horarioAbertura);
+  formData.append("horarioFechamento", dados.horarioFechamento);
 
   if (dados.regiaoId) {
     formData.append("regiaoId", dados.regiaoId);

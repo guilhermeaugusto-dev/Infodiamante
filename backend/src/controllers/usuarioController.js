@@ -84,51 +84,65 @@ async function loginUsuario(req, res) {
 
     if (!email || !senha) {
       return res.status(400).json({
-        error: "E-mail e senha são obrigatórios.",
+        mensagem: "E-mail e senha são obrigatórios.",
       });
     }
 
     const usuario = await prisma.usuario.findUnique({
-      where: { email },
+      where: {
+        email: email.trim(),
+      },
+      include: {
+        guia: true,
+        roteiros: true,
+        avaliacoes: true,
+        favoritos: {
+          include: {
+            pontoTuristico: true,
+          },
+        },
+        agendamentos: true,
+      },
     });
 
     if (!usuario) {
       return res.status(401).json({
-        error: "E-mail ou senha inválidos.",
+        mensagem: "Usuário não encontrado.",
       });
     }
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    const senhaCorreta = await bcrypt.compare(senha.trim(), usuario.senha);
 
-    if (!senhaValida) {
+    if (!senhaCorreta) {
       return res.status(401).json({
-        error: "E-mail ou senha inválidos.",
+        mensagem: "Senha incorreta.",
       });
     }
 
-    const token = gerarToken(usuario);
+    const token = jwt.sign(
+      {
+        id: usuario.id,
+        tipo: usuario.tipo,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "8h",
+      }
+    );
+
+    const { senha: senhaRemovida, ...usuarioSemSenha } = usuario;
 
     return res.status(200).json({
       mensagem: "Login realizado com sucesso.",
       token,
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        tipo: usuario.tipo,
-        criadoEm: usuario.criadoEm,
-        atualizadoEm: usuario.atualizadoEm,
-        telefone: usuario.telefone,
-        cidade: usuario.cidade,
-        bio: usuario.bio,
-        fotoUrl: usuario.fotoUrl,
-      },
+      usuario: usuarioSemSenha,
     });
   } catch (error) {
-    console.error(error);
+    console.log("Erro ao fazer login:", error);
 
     return res.status(500).json({
-      error: "Erro interno ao fazer login.",
+      mensagem: "Erro ao fazer login.",
+      erro: error.message,
     });
   }
 }

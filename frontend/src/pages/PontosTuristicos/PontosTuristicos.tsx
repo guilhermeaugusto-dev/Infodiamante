@@ -5,38 +5,60 @@ import "./PontosTuristicos.css";
 import Navbar from "../../componentes/Navbar/navbar";
 import Footer from "../../componentes/Footer/footer";
 import imagemIgreja from "../../templates/igreja-turismo.png";
-import { listarPontosTuristicos,buscarPontoTuristicoPorId } from "../../servicos/pontoTuristicoService";
-import { useUser } from "../../contexts/UserContext";
 
+import {
+  listarPontosTuristicos,
+  buscarPontoTuristicoPorId,
+} from "../../servicos/pontoTuristicoService";
+
+import { useUser } from "../../contexts/UserContext";
 import PontoTuristicoModal from "../../componentes/PontoTuristicoModal/PontoTuristicoModal";
-type PontoTuristico = {
+
+export type PontoTuristico = {
   id: number;
   nome: string;
   descricao: string;
   endereco?: string | null;
   cidade: string;
   estado: string;
+  latitude?: string | number | null;
+  longitude?: string | number | null;
   imagemUrl?: string | null;
+  ativo?: boolean;
+
+  valorIngresso?: string | number | null;
+  acessivel?: boolean;
+  tipoAcessibilidade?: string | null;
+  observacoesAcessibilidade?: string | null;
+  horarioAbertura?: string | null;
+  horarioFechamento?: string | null;
+
+  categoriaId?: number;
+  regiaoId?: number | null;
+
   categoria?: {
     id: number;
     nome: string;
     cor?: string | null;
   } | null;
+
   regiao?: {
     id: number;
     nome: string;
   } | null;
+
   avaliacoes?: any[];
   favoritos?: any[];
-};
+};;
 
 function PontosTuristicos() {
   const navigate = useNavigate();
   const { usuario } = useUser();
-  const [pontoSelecionado, setPontoSelecionado] =
-  useState<PontoTuristico | null>(null);
 
-const [carregandoPonto, setCarregandoPonto] = useState(false);
+  const [pontoSelecionado, setPontoSelecionado] =
+    useState<PontoTuristico | null>(null);
+
+  const [carregandoPonto, setCarregandoPonto] = useState(false);
   const [pontos, setPontos] = useState<PontoTuristico[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -81,19 +103,48 @@ const [carregandoPonto, setCarregandoPonto] = useState(false);
 
     return soma / avaliacoes.length;
   }
-async function abrirDetalhesPonto(id: number) {
-  try {
-    setCarregandoPonto(true);
 
-    const pontoCompleto = await buscarPontoTuristicoPorId(id);
+  function formatarMoeda(valor?: string | number | null) {
+    if (valor === null || valor === undefined || valor === "") {
+      return "Gratuito ou não informado";
+    }
 
-    setPontoSelecionado(pontoCompleto);
-  } catch (error) {
-    console.log("Erro ao buscar detalhes do ponto:", error);
-  } finally {
-    setCarregandoPonto(false);
+    return Number(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
   }
-}
+
+  function formatarHorario(ponto: PontoTuristico) {
+    if (ponto.horarioAbertura && ponto.horarioFechamento) {
+      return `${ponto.horarioAbertura} às ${ponto.horarioFechamento}`;
+    }
+
+    if (ponto.horarioAbertura && !ponto.horarioFechamento) {
+      return `Abre às ${ponto.horarioAbertura}`;
+    }
+
+    if (!ponto.horarioAbertura && ponto.horarioFechamento) {
+      return `Fecha às ${ponto.horarioFechamento}`;
+    }
+
+    return "Horário não informado";
+  }
+
+  async function abrirDetalhesPonto(id: number) {
+    try {
+      setCarregandoPonto(true);
+
+      const pontoCompleto = await buscarPontoTuristicoPorId(id);
+
+      setPontoSelecionado(pontoCompleto);
+    } catch (error) {
+      console.log("Erro ao buscar detalhes do ponto:", error);
+    } finally {
+      setCarregandoPonto(false);
+    }
+  }
+
   const categorias = useMemo(() => {
     const lista = pontos
       .map((ponto) => ponto.categoria?.nome)
@@ -182,7 +233,6 @@ async function abrirDetalhesPonto(id: number) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-
   return (
     <div className="pontos-page">
       <Navbar />
@@ -264,8 +314,6 @@ async function abrirDetalhesPonto(id: number) {
           <button type="button" className="search-button">
             🔍 Buscar
           </button>
-
-
         </section>
 
         {carregando ? (
@@ -285,10 +333,10 @@ async function abrirDetalhesPonto(id: number) {
           <section className="cards-grid">
             {pontosPaginados.map((ponto) => (
               <article
-  className="ponto-card"
-  key={ponto.id}
-  onClick={() => abrirDetalhesPonto(ponto.id)}
->
+                className="ponto-card"
+                key={ponto.id}
+                onClick={() => abrirDetalhesPonto(ponto.id)}
+              >
                 <div className="card-image">
                   <img
                     src={
@@ -302,7 +350,11 @@ async function abrirDetalhesPonto(id: number) {
                     {ponto.categoria?.nome || "Turismo"}
                   </span>
 
-                  <button type="button" className="favorite-button">
+                  <button
+                    type="button"
+                    className="favorite-button"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     ♡
                   </button>
                 </div>
@@ -326,6 +378,20 @@ async function abrirDetalhesPonto(id: number) {
                       ? `${ponto.descricao.substring(0, 90)}...`
                       : ponto.descricao}
                   </p>
+
+                  <div className="ponto-extra-info">
+                    <span>💰 {formatarMoeda(ponto.valorIngresso)}</span>
+
+                    <span>🕒 {formatarHorario(ponto)}</span>
+
+                    <span
+                      className={
+                        ponto.acessivel ? "acessivel-sim" : "acessivel-nao"
+                      }
+                    >
+                      ♿ {ponto.acessivel ? "Acessível" : "Não acessível"}
+                    </span>
+                  </div>
 
                   <div className="card-footer">
                     <span>
@@ -376,16 +442,17 @@ async function abrirDetalhesPonto(id: number) {
             </button>
           </div>
         )}
-        {carregandoPonto && (
-  <div className="pontos-loading-modal">
-    <div>Carregando detalhes...</div>
-  </div>
-)}
 
-<PontoTuristicoModal
-  ponto={pontoSelecionado}
-  onFechar={() => setPontoSelecionado(null)}
-/>
+        {carregandoPonto && (
+          <div className="pontos-loading-modal">
+            <div>Carregando detalhes...</div>
+          </div>
+        )}
+
+        <PontoTuristicoModal
+          ponto={pontoSelecionado}
+          onFechar={() => setPontoSelecionado(null)}
+        />
       </main>
 
       <Footer />

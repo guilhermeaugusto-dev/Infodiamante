@@ -10,9 +10,9 @@ export type Avaliacao = {
   usuario?: {
     id: number;
     nome: string;
-    email: string;
+    email?: string;
     fotoUrl?: string | null;
-  };
+  } | null;
 
   pontoTuristico?: {
     id: number;
@@ -24,12 +24,23 @@ export type Avaliacao = {
       id: number;
       nome: string;
     } | null;
-  };
+  } | null;
+};
+
+export type DadosCriarAvaliacao = {
+  pontoTuristicoId: number;
+  nota: number;
+  comentario: string;
+};
+
+export type DadosAtualizarAvaliacao = {
+  nota: number;
+  comentario: string;
 };
 
 const API_URL = "http://localhost:3000/avaliacoes";
 
-export async function listarAvaliacoes() {
+export async function listarAvaliacoes(): Promise<Avaliacao[]> {
   const response = await fetch(API_URL, {
     method: "GET",
   });
@@ -37,34 +48,29 @@ export async function listarAvaliacoes() {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.mensagem || "Erro ao listar avaliações.");
+    throw new Error(data.mensagem || data.erro || "Erro ao listar avaliações.");
   }
 
   return data.avaliacoes || data;
 }
-
-export async function criarAvaliacao(
-  pontoTuristicoId: number,
-  nota: number,
-  comentario: string
-) {
+export async function criarAvaliacao(dados: {
+  pontoTuristicoId: number;
+  nota: number;
+  comentario: string;
+}) {
   const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("Usuário não está logado.");
   }
 
-  const response = await fetch(API_URL, {
+  const response = await fetch("http://localhost:3000/avaliacoes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      pontoTuristicoId,
-      nota,
-      comentario,
-    }),
+    body: JSON.stringify(dados),
   });
 
   const data = await response.json();
@@ -75,11 +81,9 @@ export async function criarAvaliacao(
 
   return data;
 }
-
 export async function atualizarAvaliacao(
   id: number,
-  nota: number,
-  comentario: string
+  dados: DadosAtualizarAvaliacao
 ) {
   const token = localStorage.getItem("token");
 
@@ -94,15 +98,17 @@ export async function atualizarAvaliacao(
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      nota,
-      comentario,
+      nota: dados.nota,
+      comentario: dados.comentario,
     }),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.mensagem || "Erro ao atualizar avaliação.");
+    throw new Error(
+      data.mensagem || data.erro || "Erro ao atualizar avaliação."
+    );
   }
 
   return data;
@@ -125,8 +131,30 @@ export async function deletarAvaliacao(id: number) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.mensagem || "Erro ao deletar avaliação.");
+    throw new Error(data.mensagem || data.erro || "Erro ao deletar avaliação.");
   }
 
   return data;
+}
+export async function listarMinhasAvaliacoes(): Promise<Avaliacao[]> {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Usuário não está logado.");
+  }
+
+  const response = await fetch("http://localhost:3000/avaliacoes/me", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.mensagem || "Erro ao buscar suas avaliações.");
+  }
+
+  return data.avaliacoes || data;
 }

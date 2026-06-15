@@ -1,0 +1,146 @@
+.avaliar-ponto-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.avaliar-ponto-container {
+  width: 92%;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 45px 0 70px;
+  flex: 1;
+}
+
+.avaliar-ponto-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 34px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+}
+
+.avaliar-ponto-card h1 {
+  margin: 0 0 22px;
+  color: #800020;
+  font-family: Georgia, serif;
+  font-size: 38px;
+}
+
+.avaliar-ponto-info {
+  background: #f8f9fa;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.avaliar-ponto-info h2 {
+  color: #800020;
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.avaliar-ponto-info p {
+  margin: 0;
+  color: #555555;
+}
+
+.avaliar-ponto-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.avaliar-ponto-group label {
+  color: #333333;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.avaliar-ponto-group select,
+.avaliar-ponto-group textarea {
+  width: 100%;
+  border: 1px solid #d4d7dc;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 15px;
+  outline: none;
+}
+
+.avaliar-ponto-group select {
+  height: 46px;
+  padding: 0 12px;
+}
+
+.avaliar-ponto-group textarea {
+  min-height: 160px;
+  padding: 14px;
+  resize: vertical;
+}
+
+.avaliar-ponto-group select:focus,
+.avaliar-ponto-group textarea:focus {
+  border-color: #800020;
+}
+
+.avaliar-ponto-stars {
+  color: #f5b400;
+  font-size: 34px;
+  margin: 4px 0 20px;
+}
+
+.avaliar-ponto-message {
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.avaliar-ponto-message.sucesso {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.avaliar-ponto-message.erro {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.avaliar-ponto-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.avaliar-ponto-voltar,
+.avaliar-ponto-enviar {
+  height: 46px;
+  border-radius: 10px;
+  padding: 0 24px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.avaliar-ponto-voltar {
+  background: #ffffff;
+  color: #800020;
+  border: 1px solid #800020;
+}
+
+.avaliar-ponto-enviar {
+  background: #800020;
+  color: #ffffff;
+  border: none;
+}
+
+.avaliar-ponto-enviar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

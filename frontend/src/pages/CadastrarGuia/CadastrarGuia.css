@@ -9,6 +9,66 @@
   display: flex;
   flex-direction: column;
 }
+.termos-guia-box {
+  background: #fff7e6;
+  border: 1px solid #f0d28a;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 20px;
+  margin-bottom: 18px;
+}
+
+.termos-guia-box h3 {
+  color: #8a0032;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.termos-guia-box p {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.termos-guia-box strong {
+  color: #8a0032;
+}
+
+.termos-guia-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.termos-opcao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #223a58;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.termos-opcao input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.termos-aviso {
+  color: #c0392b !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.seja-guia-salvar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .seja-guia-main {
   width: 94%;
