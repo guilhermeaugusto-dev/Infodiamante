@@ -3,14 +3,11 @@ import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 import igreja from "../../templates/igreja.png";
 import UserMenuModal from "../UserMenuModal/userMenuModal";
-import { useUser } from "../../contexts/UserContext";
 
 function Navbar() {
 
 
   const token = localStorage.getItem("token");
-  const { usuario } = useUser();
-  const isAdmin = usuario?.tipo === "ADMIN";
   const usuarioLogado = !!token;
 
   return (

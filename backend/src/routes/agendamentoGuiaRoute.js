@@ -7,6 +7,7 @@ const {
   cancelarAgendamentoGuia,
   confirmarAgendamentoGuia,
 } = require("../controllers/agendamentoGuiaController");
+
 const {
   autenticarUsuario,
   verificarGuia,
@@ -14,14 +15,28 @@ const {
 
 const router = express.Router();
 
-router.post("/", autenticarUsuario, verificarGuia, criarAgendamentoGuia);
+router.post("/", autenticarUsuario, criarAgendamentoGuia);
 
-router.get("/me", autenticarUsuario, verificarGuia, listarMeusAgendamentosGuias);
 
-router.get("/guia/me", autenticarUsuario, verificarGuia, listarAgendamentosDoGuia);
+router.get("/me", autenticarUsuario, listarMeusAgendamentosGuias);
 
-router.patch("/:id/confirmar", autenticarUsuario, verificarGuia, confirmarAgendamentoGuia);
 
-router.patch("/:id/cancelar", autenticarUsuario, verificarGuia, cancelarAgendamentoGuia);
+router.get(
+  "/guia/me",
+  autenticarUsuario,
+  verificarGuia,
+  listarAgendamentosDoGuia
+);
+
+
+router.patch(
+  "/:id/confirmar",
+  autenticarUsuario,
+  verificarGuia,
+  confirmarAgendamentoGuia
+);
+
+
+router.patch("/:id/cancelar", autenticarUsuario, cancelarAgendamentoGuia);
 
 module.exports = router;

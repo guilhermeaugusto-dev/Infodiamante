@@ -1,15 +1,89 @@
+import { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
-import { useUser } from "../../contexts/UserContext";
+
+import {
+  listarMeusAgendamentosGuias,
+  type AgendamentoGuia,
+} from "../../servicos/agendamentoGuiaService";
 
 function HistoricoAgendamentos() {
-  const { usuario } = useUser();
+  const [agendamentos, setAgendamentos] = useState<AgendamentoGuia[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
-  const agendamentos = usuario?.agendamentos || [];
+  useEffect(() => {
+    async function carregarAgendamentos() {
+      try {
+        setCarregando(true);
+        setErro("");
 
+        const data = await listarMeusAgendamentosGuias();
+
+        console.log("Agendamentos:", data);
+
+        setAgendamentos(data);
+      } catch (error) {
+        console.log("Erro ao carregar agendamentos:", error);
+
+        setErro(
+          error instanceof Error
+            ? error.message
+            : "Erro ao carregar agendamentos."
+        );
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarAgendamentos();
+  }, []);
 
   function formatarData(data?: string) {
     if (!data) return "Sem data";
     return new Date(data).toLocaleDateString("pt-BR");
+  }
+
+  function buscarFotoGuia(agendamento: AgendamentoGuia) {
+    const fotoGuia = agendamento.guia?.usuario?.fotoUrl;
+
+    if (fotoGuia) {
+      return fotoGuia;
+    }
+
+    const nomeGuia = agendamento.guia?.usuario?.nome || "Guia Local";
+
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      nomeGuia
+    )}&background=800020&color=fff`;
+  }
+
+  function buscarNomeGuia(agendamento: AgendamentoGuia) {
+    return agendamento.guia?.usuario?.nome || "Guia local";
+  }
+
+  function buscarDescricaoAgendamento(agendamento: AgendamentoGuia) {
+    return (
+      agendamento.observacoes ||
+      agendamento.guia?.biografia ||
+      agendamento.guia?.especialidade ||
+      "Agendamento com guia turístico local."
+    );
+  }
+
+  if (carregando) {
+    return (
+      <div className="historico-empty">
+        <h2>Carregando agendamentos...</h2>
+      </div>
+    );
+  }
+
+  if (erro) {
+    return (
+      <div className="historico-empty">
+        <h2>{erro}</h2>
+      </div>
+    );
   }
 
   if (agendamentos.length === 0) {
@@ -23,7 +97,7 @@ function HistoricoAgendamentos() {
 
   return (
     <>
-      {agendamentos.map((agendamento: any, index: number) => (
+      {agendamentos.map((agendamento, index) => (
         <div
           className="historico-card"
           key={`agendamento-${agendamento.id || index}`}
@@ -39,31 +113,24 @@ function HistoricoAgendamentos() {
 
           <div className="historico-card-image">
             <img
-              src={
-                agendamento.guia?.usuario?.fotoUrl ||
-                agendamento.guia?.fotoUrl ||
-                "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80"
-              }
-              alt="Guia"
+              src={buscarFotoGuia(agendamento)}
+              alt={buscarNomeGuia(agendamento)}
             />
           </div>
 
           <div className="historico-card-body">
-            <h3>
-              {agendamento.guia?.usuario?.nome ||
-                agendamento.guia?.nome ||
-                "Guia local"}
-            </h3>
+            <h3>{buscarNomeGuia(agendamento)}</h3>
 
             <div className="historico-tags">
               <span className="tag green">Guia</span>
-              <span className="tag gray">{agendamento.status || "Pendente"}</span>
+
+              <span className="tag gray">
+                {agendamento.status || "Pendente"}
+              </span>
             </div>
 
             <p className="historico-route-description">
-              {agendamento.descricao ||
-                agendamento.guia?.descricao ||
-                "Agendamento com guia turístico local."}
+              {buscarDescricaoAgendamento(agendamento)}
             </p>
 
             <div className="historico-card-footer">
@@ -73,7 +140,9 @@ function HistoricoAgendamentos() {
               </div>
 
               <div className="historico-rating">
-                <span>{agendamento.horario || ""}</span>
+                <span>
+                  {agendamento.horas ? `${agendamento.horas} hora(s)` : ""}
+                </span>
               </div>
             </div>
           </div>

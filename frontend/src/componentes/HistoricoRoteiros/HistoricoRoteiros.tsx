@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Calendar, Clock, MapPin, Trash2, X } from "lucide-react";
+import { Calendar, Clock, MapPin, Trash2, X, Navigation } from "lucide-react";
 
 import {
   listarMeusRoteiros,
@@ -66,6 +66,57 @@ function HistoricoRoteiros() {
     }, 0);
 
     return total || 0;
+  }
+
+  function abrirRotaNoGoogleMaps(roteiro: Roteiro) {
+    const pontosComCoordenadas =
+      roteiro.pontos
+        ?.filter((item) => {
+          const latitude = Number(item.pontoTuristico?.latitude);
+          const longitude = Number(item.pontoTuristico?.longitude);
+
+          return (
+            item.pontoTuristico?.latitude !== null &&
+            item.pontoTuristico?.latitude !== undefined &&
+            item.pontoTuristico?.longitude !== null &&
+            item.pontoTuristico?.longitude !== undefined &&
+            !Number.isNaN(latitude) &&
+            !Number.isNaN(longitude)
+          );
+        })
+        .sort((a, b) => a.ordemVisita - b.ordemVisita) || [];
+
+    if (pontosComCoordenadas.length < 2) {
+      alert(
+        "Para abrir a rota no Google Maps, o roteiro precisa ter pelo menos 2 pontos com latitude e longitude."
+      );
+      return;
+    }
+
+    const primeiroPonto = pontosComCoordenadas[0].pontoTuristico;
+    const ultimoPonto =
+      pontosComCoordenadas[pontosComCoordenadas.length - 1].pontoTuristico;
+
+    const pontosDoMeio = pontosComCoordenadas.slice(1, -1);
+
+    const origem = `${primeiroPonto?.latitude},${primeiroPonto?.longitude}`;
+    const destino = `${ultimoPonto?.latitude},${ultimoPonto?.longitude}`;
+
+    const waypoints = pontosDoMeio
+      .map((item) => {
+        return `${item.pontoTuristico?.latitude},${item.pontoTuristico?.longitude}`;
+      })
+      .join("|");
+
+    let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+      origem
+    )}&destination=${encodeURIComponent(destino)}&travelmode=walking`;
+
+    if (waypoints) {
+      url += `&waypoints=${encodeURIComponent(waypoints)}`;
+    }
+
+    window.open(url, "_blank");
   }
 
   async function removerRoteiro(id: number) {
@@ -172,6 +223,7 @@ function HistoricoRoteiros() {
                   strokeWidth="3"
                   strokeDasharray="5,5"
                 />
+
                 <circle
                   cx="20"
                   cy="80"
@@ -180,6 +232,7 @@ function HistoricoRoteiros() {
                   stroke="white"
                   strokeWidth="2"
                 />
+
                 <circle
                   cx="80"
                   cy="20"
@@ -222,7 +275,16 @@ function HistoricoRoteiros() {
                   className="historico-details-button"
                   onClick={() => setRoteiroSelecionado(roteiro)}
                 >
-                  Ver Detalhes do Roteiro
+                  Ver detalhes
+                </button>
+
+                <button
+                  type="button"
+                  className="historico-maps-button"
+                  onClick={() => abrirRotaNoGoogleMaps(roteiro)}
+                >
+                  <Navigation className="icon-xs" />
+                  Google Maps
                 </button>
               </div>
             </div>
@@ -235,10 +297,7 @@ function HistoricoRoteiros() {
           className="roteiro-modal-overlay"
           onClick={() => setRoteiroSelecionado(null)}
         >
-          <div
-            className="roteiro-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="roteiro-modal" onClick={(e) => e.stopPropagation()}>
             <button
               type="button"
               className="roteiro-modal-close"
@@ -281,7 +340,9 @@ function HistoricoRoteiros() {
 
               <div>
                 <strong>Total dos ingressos</strong>
-                <p>{formatarMoeda(calcularTotalIngressos(roteiroSelecionado))}</p>
+                <p>
+                  {formatarMoeda(calcularTotalIngressos(roteiroSelecionado))}
+                </p>
               </div>
 
               <div>
@@ -334,6 +395,14 @@ function HistoricoRoteiros() {
                           ? "Acessível"
                           : "Não acessível"}
                       </small>
+
+                      {item.pontoTuristico?.latitude &&
+                        item.pontoTuristico?.longitude && (
+                          <small>
+                            📍 {item.pontoTuristico.latitude},{" "}
+                            {item.pontoTuristico.longitude}
+                          </small>
+                        )}
                     </div>
                   </div>
                 ))
@@ -341,6 +410,13 @@ function HistoricoRoteiros() {
             </div>
 
             <div className="roteiro-modal-actions">
+              <button
+                type="button"
+                onClick={() => abrirRotaNoGoogleMaps(roteiroSelecionado)}
+              >
+                Abrir no Google Maps
+              </button>
+
               <button
                 type="button"
                 onClick={() => setRoteiroSelecionado(null)}

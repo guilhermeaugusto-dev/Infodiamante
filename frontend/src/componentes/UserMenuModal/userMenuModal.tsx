@@ -11,8 +11,7 @@ function UserMenuModal() {
   const primeiroNome = nomeUsuario ? nomeUsuario.split(" ")[0] : "Usuário";
   const fotoUrl = usuario?.fotoUrl;
   const inicial = primeiroNome.charAt(0).toUpperCase();
-  console.log("Usuário no menu:", usuario);
-  console.log("Guia do usuário:", usuario?.GUIA)
+  
 
 
   return (

@@ -4,13 +4,10 @@ import {
   Map as MapIcon,
   Star,
   Calendar,
-  ArrowDown,
   Heart,
 } from "lucide-react";
-
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
-import { useUser } from "../../contexts/UserContext";
 
 import HistoricoRoteiros from "../../componentes/HistoricoRoteiros/HistoricoRoteiros";
 import HistoricoAvaliacoes from "../../componentes/HistoricoAvaliacoes/HistoricoAvaliacao";
@@ -18,57 +15,34 @@ import HistoricoFavoritos from "../../componentes/HistoricoFavoritos/HistoricoFa
 import HistoricoAgendamentos from "../../componentes/HistoricoAgendamentos/HistoricoAgendamentos";
 
 import "./historico.css";
+import type { Roteiro } from "../../servicos/roteiroService";
 
 export default function Historico() {
-  const [activeTab, setActiveTab] = useState("todos");
-
-  const { usuario } = useUser();
-
-  const roteiros = usuario?.roteiros || [];
-  const avaliacoes = usuario?.avaliacoes || [];
-  const favoritos = usuario?.favoritos || [];
-  const agendamentos = usuario?.agendamentos || [];
-
-  const naoTemHistorico =
-    roteiros.length === 0 &&
-    avaliacoes.length === 0 &&
-    favoritos.length === 0 &&
-    agendamentos.length === 0;
-    
-
+  const [activeTab, setActiveTab] = useState("roteiros");
+  const [busca, setBusca] = useState("");
+  const [periodo, setPeriodo] = useState("todo");
+  const [ordenacao, setOrdenacao] = useState("recentes");
+const [roteiros, setRoteiros] = useState<Roteiro[]>([]);
   function renderizarConteudo() {
-    if (activeTab === "todos") {
-      if (naoTemHistorico) {
-        return (
-          <div className="historico-empty">
-            <h2>Você ainda não possui histórico</h2>
-            <p>
-              Quando você criar roteiros, avaliar lugares, favoritar pontos
-              turísticos ou agendar guias, essas informações aparecerão aqui.
-            </p>
-          </div>
-        );
-      }
-
-      return (
-        <section className="historico-grid">
-          <HistoricoAvaliacoes />
-          <HistoricoFavoritos />
-          <HistoricoRoteiros />
-          <HistoricoAgendamentos />
-        </section>
-      );
-    }
-
     return (
       <section className="historico-grid">
+        {activeTab === "roteiros" && <HistoricoRoteiros />}
         {activeTab === "avaliacoes" && <HistoricoAvaliacoes />}
         {activeTab === "favoritos" && <HistoricoFavoritos />}
-        {activeTab === "roteiros" && <HistoricoRoteiros />}
         {activeTab === "agendamentos" && <HistoricoAgendamentos />}
       </section>
     );
   }
+
+  function buscarHistorico() {
+    console.log("Filtros do histórico:", {
+      busca,
+      periodo,
+      ordenacao,
+      activeTab,
+    });
+  }
+ 
 
   return (
     <div className="historico-page">
@@ -78,6 +52,7 @@ export default function Historico() {
         <section className="historico-title-area">
           <div className="historico-title-content">
             <h1>Seu Histórico</h1>
+
             <p>
               Relembre os lugares incríveis que você visitou, seus favoritos,
               avaliações, roteiros e agendamentos com guias.
@@ -105,17 +80,23 @@ export default function Historico() {
         <section className="historico-filter-bar">
           <div className="historico-search-box">
             <Search className="historico-search-icon" />
-            <input type="text" placeholder="Buscar no histórico..." />
+
+            <input
+              type="text"
+              placeholder="Buscar no histórico..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
           </div>
 
           <div className="historico-selects">
             <div className="historico-select-group">
               <label>Tipo de Registro</label>
+
               <select
                 value={activeTab}
                 onChange={(e) => setActiveTab(e.target.value)}
               >
-                <option value="todos">Todos os registros</option>
                 <option value="roteiros">Roteiros</option>
                 <option value="avaliacoes">Avaliações</option>
                 <option value="favoritos">Favoritos</option>
@@ -125,33 +106,43 @@ export default function Historico() {
 
             <div className="historico-select-group">
               <label>Período</label>
-              <select>
-                <option>Todo o período</option>
-                <option>Últimos 6 meses</option>
-                <option>Este ano</option>
-                <option>Ano passado</option>
+
+              <select
+                value={periodo}
+                onChange={(e) => setPeriodo(e.target.value)}
+              >
+                <option value="todo">Todo o período</option>
+                <option value="6meses">Últimos 6 meses</option>
+                <option value="esteAno">Este ano</option>
+                <option value="anoPassado">Ano passado</option>
               </select>
             </div>
 
             <div className="historico-select-group">
               <label>Ordenar por</label>
-              <select>
-                <option>Mais recentes</option>
-                <option>Mais antigos</option>
-                <option>Maior avaliação</option>
+
+              <select
+                value={ordenacao}
+                onChange={(e) => setOrdenacao(e.target.value)}
+              >
+                <option value="recentes">Mais recentes</option>
+                <option value="antigos">Mais antigos</option>
+                <option value="maiorAvaliacao">Maior avaliação</option>
               </select>
             </div>
           </div>
 
-          <button type="button" className="historico-search-button">
+          <button
+            type="button"
+            className="historico-search-button"
+            onClick={buscarHistorico}
+          >
             <Search className="icon-sm blue-icon" />
             Buscar
           </button>
         </section>
 
         <section className="historico-tabs">
-    
-
           <button
             type="button"
             onClick={() => setActiveTab("roteiros")}
@@ -191,14 +182,13 @@ export default function Historico() {
 
         {renderizarConteudo()}
 
-        {!naoTemHistorico && (
-          <div className="historico-load-more">
-            <button type="button">
-              <ArrowDown className="icon-sm" />
-              Carregar mais histórico
-            </button>
-          </div>
-        )}
+    {roteiros.length > 5 && (
+  <div className="historico-load-more">
+    <button type="button">
+      Carregar mais roteiros
+    </button>
+  </div>
+)}
       </main>
 
       <Footer />

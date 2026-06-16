@@ -20,6 +20,8 @@ export type AgendamentoGuia = {
   guia?: {
     id: number;
     especialidade: string;
+    biografia?: string | null;
+    precoPorHora?: string | number | null;
     usuario?: {
       id: number;
       nome: string;
@@ -38,14 +40,34 @@ export type DadosAgendamentoGuia = {
   observacoes: string;
 };
 
-export async function criarAgendamentoGuia(dados: DadosAgendamentoGuia) {
+const API_URL = "http://localhost:3000/agendamentos-guias";
+
+function pegarToken() {
   const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("Usuário não está logado.");
   }
 
-  const response = await fetch("http://localhost:3000/agendamentos-guias", {
+  return token;
+}
+
+async function lerResposta(response: Response) {
+  const texto = await response.text();
+
+  try {
+    return texto ? JSON.parse(texto) : {};
+  } catch {
+    throw new Error(
+      "A resposta do servidor não veio em JSON. Verifique se a rota do backend existe e se o servidor está rodando na porta 3000."
+    );
+  }
+}
+
+export async function criarAgendamentoGuia(dados: DadosAgendamentoGuia) {
+  const token = pegarToken();
+
+  const response = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -54,7 +76,7 @@ export async function criarAgendamentoGuia(dados: DadosAgendamentoGuia) {
     body: JSON.stringify(dados),
   });
 
-  const data = await response.json();
+  const data = await lerResposta(response);
 
   if (!response.ok) {
     throw new Error(data.erro || data.mensagem || "Erro ao agendar guia.");
@@ -63,24 +85,36 @@ export async function criarAgendamentoGuia(dados: DadosAgendamentoGuia) {
   return data;
 }
 
-export async function listarAgendamentosDoGuia() {
-  const token = localStorage.getItem("token");
+export async function listarMeusAgendamentosGuias(): Promise<AgendamentoGuia[]> {
+  const token = pegarToken();
 
-  if (!token) {
-    throw new Error("Usuário não está logado.");
+  const response = await fetch(`${API_URL}/me`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await lerResposta(response);
+
+  if (!response.ok) {
+    throw new Error(data.mensagem || "Erro ao buscar seus agendamentos.");
   }
 
-  const response = await fetch(
-    "http://localhost:3000/agendamentos-guias/guia/me",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  return data.agendamentos || data;
+}
 
-  const data = await response.json();
+export async function listarAgendamentosDoGuia(): Promise<AgendamentoGuia[]> {
+  const token = pegarToken();
+
+  const response = await fetch(`${API_URL}/guia/me`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await lerResposta(response);
 
   if (!response.ok) {
     throw new Error(data.mensagem || "Erro ao buscar agendamentos do guia.");
@@ -90,23 +124,16 @@ export async function listarAgendamentosDoGuia() {
 }
 
 export async function confirmarAgendamentoGuia(id: number) {
-  const token = localStorage.getItem("token");
+  const token = pegarToken();
 
-  if (!token) {
-    throw new Error("Usuário não está logado.");
-  }
+  const response = await fetch(`${API_URL}/${id}/confirmar`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  const response = await fetch(
-    `http://localhost:3000/agendamentos-guias/${id}/confirmar`,
-    {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  const data = await response.json();
+  const data = await lerResposta(response);
 
   if (!response.ok) {
     throw new Error(data.mensagem || "Erro ao confirmar agendamento.");
@@ -116,23 +143,16 @@ export async function confirmarAgendamentoGuia(id: number) {
 }
 
 export async function cancelarAgendamentoGuia(id: number) {
-  const token = localStorage.getItem("token");
+  const token = pegarToken();
 
-  if (!token) {
-    throw new Error("Usuário não está logado.");
-  }
+  const response = await fetch(`${API_URL}/${id}/cancelar`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  const response = await fetch(
-    `http://localhost:3000/agendamentos-guias/${id}/cancelar`,
-    {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  const data = await response.json();
+  const data = await lerResposta(response);
 
   if (!response.ok) {
     throw new Error(data.mensagem || "Erro ao cancelar agendamento.");
