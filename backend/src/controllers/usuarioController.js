@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../services/prisma");
-
 const SALT_ROUNDS = 10;
 
 function gerarToken(usuario) {
@@ -85,53 +84,130 @@ async function loginUsuario(req, res) {
 
     if (!email || !senha) {
       return res.status(400).json({
-        error: "E-mail e senha são obrigatórios.",
+        mensagem: "E-mail e senha são obrigatórios.",
       });
     }
 
     const usuario = await prisma.usuario.findUnique({
-      where: { email },
+      where: {
+        email: email.trim(),
+      },
+      include: {
+        guia: true,
+        roteiros: true,
+        avaliacoes: true,
+        favoritos: {
+          include: {
+            pontoTuristico: true,
+          },
+        },
+        agendamentos: true,
+      },
     });
 
     if (!usuario) {
       return res.status(401).json({
-        error: "E-mail ou senha inválidos.",
+        mensagem: "Usuário não encontrado.",
       });
     }
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    const senhaCorreta = await bcrypt.compare(senha.trim(), usuario.senha);
 
-    if (!senhaValida) {
+    if (!senhaCorreta) {
       return res.status(401).json({
-        error: "E-mail ou senha inválidos.",
+        mensagem: "Senha incorreta.",
       });
     }
 
-    const token = gerarToken(usuario);
+    const token = jwt.sign(
+      {
+        id: usuario.id,
+        tipo: usuario.tipo,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "8h",
+      }
+    );
+
+    const { senha: senhaRemovida, ...usuarioSemSenha } = usuario;
 
     return res.status(200).json({
       mensagem: "Login realizado com sucesso.",
       token,
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        tipo: usuario.tipo,
-        criadoEm: usuario.criadoEm,
-        atualizadoEm: usuario.atualizadoEm,
-      },
+      usuario: usuarioSemSenha,
     });
   } catch (error) {
-    console.error(error);
+    console.log("Erro ao fazer login:", error);
 
     return res.status(500).json({
-      error: "Erro interno ao fazer login.",
+      mensagem: "Erro ao fazer login.",
+      erro: error.message,
     });
   }
 }
 
 async function buscarUsuarioLogado(req, res) {
-  return res.status(200).json(req.usuario);
+  try {
+    const usuarioId = req.usuario.id;
+
+    const usuario = await prisma.usuario.findUnique({
+      where: {
+        id: usuarioId,
+      },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        telefone: true,
+        cidade: true,
+        bio: true,
+        fotoUrl: true,
+        tipo: true,
+
+        guia: {
+          select: {
+            id: true,
+            usuarioId: true,
+            biografia: true,
+            especialidade: true,
+            idiomas: true,
+            precoPorHora: true,
+            anosExperiencia: true,
+            verificado: true,
+            disponivel: true,
+            imagemUrl: true,
+          },
+        },
+
+        roteiros: true,
+        avaliacoes: true,
+        favoritos: {
+          include: {
+            pontoTuristico: true,
+          },
+        },
+        agendamentos: true,
+      },
+    });
+
+    if (!usuario) {
+      return res.status(404).json({
+        mensagem: "Usuário não encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      usuario,
+    });
+  } catch (error) {
+    console.log("Erro ao buscar usuário logado:", error);
+
+    return res.status(500).json({
+      mensagem: "Erro ao buscar usuário logado.",
+      erro: error.message,
+    });
+  }
 }
 
 
@@ -148,6 +224,8 @@ async function buscarUsuarioPorId(req, res) {
         nome: true,
         email: true,
         telefone: true,
+        cidade: true,
+        bio: true,
         fotoUrl: true,
         tipo: true,
         criadoEm: true,
@@ -171,41 +249,54 @@ async function buscarUsuarioPorId(req, res) {
   }
 }
 
-async function atualizarUsuario(req, res) {
+async function atualizarPerfil(req, res) {
   try {
-    const { id } = req.params;
-    const { nome   } = req.body;
+    const usuarioId = req.usuario.id;
+    const { nome, email, telefone, cidade, bio, senha } = req.body;
 
-    const usuarioId = Number(id);
-
-    if (req.usuario.id !== usuarioId && req.usuario.tipo !== "ADMIN") {
-      return res.status(403).json({
-        error: "Você só pode atualizar sua própria conta.",
+    if (!nome || !nome.trim()) {
+      return res.status(400).json({
+        mensagem: "Nome é obrigatório.",
       });
     }
 
-    const usuarioExiste = await prisma.usuario.findUnique({
-      where: { id: usuarioId },
-    });
-
-    if (!usuarioExiste) {
-      return res.status(404).json({
-        error: "Usuário não encontrado.",
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        mensagem: "E-mail é obrigatório.",
       });
+    }
+
+      if (req.file) {
+      const imagemBase64 = req.file.buffer.toString("base64");
+      fotoUrl = `data:${req.file.mimetype};base64,${imagemBase64}`;
+    }
+
+    const dataAtualizacao = {
+      nome: nome.trim(),
+      email: email.trim(),
+      telefone: telefone?.trim() || null,
+      cidade: cidade?.trim() || null,
+      bio: bio?.trim() || null,
+      ...(fotoUrl && { fotoUrl }),
+    };
+
+    if (senha && senha.trim()) {
+      const senhaCriptografada = await bcrypt.hash(senha, SALT_ROUNDS);
+      dataAtualizacao.senha = senhaCriptografada;
     }
 
     const usuarioAtualizado = await prisma.usuario.update({
-      where: { id: usuarioId },
-      data: {
-        nome,
-        telefone,
-        fotoUrl,
+      where: {
+        id: usuarioId,
       },
+      data: dataAtualizacao,
       select: {
         id: true,
         nome: true,
         email: true,
         telefone: true,
+        cidade: true,
+        bio: true,
         fotoUrl: true,
         tipo: true,
         criadoEm: true,
@@ -214,18 +305,17 @@ async function atualizarUsuario(req, res) {
     });
 
     return res.status(200).json({
-      mensagem: "Usuário atualizado com sucesso.",
+      mensagem: "Perfil atualizado com sucesso.",
       usuario: usuarioAtualizado,
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
 
     return res.status(500).json({
-      error: "Erro interno ao atualizar usuário.",
+      mensagem: "Erro ao atualizar perfil.",
     });
   }
 }
-
 async function deletarUsuario(req, res) {
   try {
     const { id } = req.params;
@@ -262,6 +352,6 @@ module.exports = {
   loginUsuario,
   buscarUsuarioLogado,
   buscarUsuarioPorId,
-  atualizarUsuario,
+  atualizarPerfil,
   deletarUsuario,
 };

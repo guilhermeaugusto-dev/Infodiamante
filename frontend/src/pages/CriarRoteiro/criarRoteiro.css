@@ -16,6 +16,38 @@
   box-sizing: border-box;
 }
 
+.categorias-selecionadas {
+  min-height: 44px;
+  border: 1px solid #d4d7dc;
+  border-radius: 9px;
+  background: #ffffff;
+  padding: 8px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.categorias-selecionadas span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.categorias-selecionadas button {
+  border: none;
+  border-radius: 999px;
+  background: #800020;
+  color: #ffffff;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.categorias-selecionadas button:hover {
+  background: #a3153b;
+}
 .roteiro-page {
   min-height: 100vh;
   background: #f5f7fb;
@@ -24,6 +56,33 @@
 
   display: flex;
   flex-direction: column;
+}
+.roteiro-message {
+  margin-top: 18px;
+  color: #c0392b;
+  font-weight: 800;
+  font-size: 14px;
+}
+.roteiro-message {
+  margin-top: 18px;
+  color: #c0392b;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.destino-item {
+  cursor: pointer;
+}
+
+.destino-item.active {
+  border: 3px solid #800020;
+}
+.destino-item {
+  cursor: pointer;
+}
+
+.destino-item.active {
+  border: 3px solid #800020;
 }
 
 .roteiro-container {
@@ -366,69 +425,3 @@
 
 /* RESPONSIVO */
 
-@media (max-width: 1200px) {
-  .roteiro-container {
-    width: 94%;
-  }
-
-  .roteiro-header {
-    grid-template-columns: 1fr;
-  }
-
-  .roteiro-content {
-    grid-template-columns: 1fr;
-  }
-
-  .destinos-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .steps {
-    width: 100%;
-  }
-}
-
-@media (max-width: 760px) {
-  .roteiro-header h1 {
-    font-size: 38px;
-  }
-
-  .roteiro-header p {
-    font-size: 15px;
-    line-height: 23px;
-  }
-
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-  }
-
-  .step-line {
-    display: none;
-  }
-
-  .destino-title {
-    flex-direction: column;
-  }
-
-  .search-destino {
-    width: 100%;
-  }
-
-  .destinos-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .continue-area {
-    justify-content: stretch;
-  }
-
-  .continue-area button {
-    width: 100%;
-  }
-}

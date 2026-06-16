@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+
 }
 
 enum TipoUsuario {
@@ -31,14 +32,14 @@ model Usuario {
   id        Int         @id @default(autoincrement())
   nome      String
   email     String      @unique
-  senha     String
+  senha     String      @default("")
+  bio       String?
   telefone  String?
-  fotoUrl   String?
+  cidade    String?
+  fotoUrl   String? @db.LongText
   tipo      TipoUsuario @default(USUARIO)
-
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
-
   guia            Guia?
   roteiros        Roteiro[]
   avaliacoes      Avaliacao[]
@@ -53,9 +54,7 @@ model Categoria {
   nome      String  @unique
   descricao String?
   cor       String?
-
   pontosTuristicos PontoTuristico[]
-
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
@@ -66,12 +65,9 @@ model Regiao {
   id        Int     @id @default(autoincrement())
   nome      String  @unique
   descricao String?
-
   pontosTuristicos PontoTuristico[]
-
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
-
   @@map("regioes")
 }
 
@@ -84,11 +80,16 @@ model PontoTuristico {
   estado    String
   latitude  Decimal? @db.Decimal(10, 8)
   longitude Decimal? @db.Decimal(11, 8)
-  imagemUrl String?
+  imagemUrl String? @db.LongText
   ativo     Boolean @default(true)
-
   categoriaId Int
   regiaoId    Int?
+  valorIngresso Decimal? @db.Decimal(10, 2)
+  acessivel Boolean @default(false)
+  tipoAcessibilidade String?
+  observacoesAcessibilidade String? @db.Text
+  horarioAbertura String?
+horarioFechamento String?
 
   categoria Categoria @relation(fields: [categoriaId], references: [id])
   regiao    Regiao?   @relation(fields: [regiaoId], references: [id])
@@ -106,6 +107,7 @@ model PontoTuristico {
 model Guia {
   id              Int      @id @default(autoincrement())
   usuarioId       Int      @unique
+
   biografia       String?  @db.Text
   especialidade   String
   idiomas         String?
@@ -113,6 +115,7 @@ model Guia {
   anosExperiencia Int?
   verificado      Boolean  @default(false)
   disponivel      Boolean  @default(true)
+  imagemUrl       String?  @db.LongText
 
   usuario Usuario @relation(fields: [usuarioId], references: [id])
 
@@ -155,6 +158,7 @@ model Roteiro {
   status             StatusRoteiro @default(RASCUNHO)
 
   usuario Usuario @relation(fields: [usuarioId], references: [id])
+
 
   pontos PontoDoRoteiro[]
 

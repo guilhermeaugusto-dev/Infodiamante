@@ -1,9 +1,17 @@
+
 import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 import igreja from "../../templates/igreja.png";
+import UserMenuModal from "../UserMenuModal/userMenuModal";
 
 function Navbar() {
+
+
+  const token = localStorage.getItem("token");
+  const usuarioLogado = !!token;
+
   return (
+    
     <header className="navbar">
       <Link to="/" className="logo">
         <div className="logo-icon">
@@ -18,17 +26,25 @@ function Navbar() {
       </Link>
 
       <nav className="menu">
-        <NavLink to="/">Início</NavLink>
+        {!usuarioLogado && <NavLink to="/">Início</NavLink>}
+        
+
         <NavLink to="/pontos-turisticos">Pontos Turísticos</NavLink>
         <NavLink to="/criarRoteiro">Criar Roteiro</NavLink>
         <NavLink to="/guias">Guias</NavLink>
-        <NavLink to="/promocoes">Promoções</NavLink>
+        <NavLink to="/seja-parceiro">Seja Parceiro</NavLink>
+        <NavLink to="/seja-guia">Seja um Guia</NavLink>
         <NavLink to="/avaliacoes">Avaliações</NavLink>
+
       </nav>
 
-      <Link to="/" className="header-login-btn">
-        Entrar
-      </Link>
+      {!usuarioLogado ? (
+        <Link to="/" className="header-login-btn">
+          Entrar
+        </Link>
+      ) : (
+        <UserMenuModal />
+      )}
     </header>
   );
 }

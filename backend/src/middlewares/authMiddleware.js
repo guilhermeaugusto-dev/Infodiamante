@@ -21,20 +21,29 @@ async function autenticarUsuario(req, res, next) {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const usuario = await prisma.usuario.findUnique({
-      where: {
-        id: decoded.id,
-      },
+ const usuario = await prisma.usuario.findUnique({
+  where: {
+    id: decoded.id,
+  },
+  select: {
+    id: true,
+    nome: true,
+    email: true,
+    tipo: true,
+    criadoEm: true,
+    atualizadoEm: true,
+
+    guia: {
       select: {
         id: true,
-        nome: true,
-        email: true,
-        tipo: true,
-        criadoEm: true,
-        atualizadoEm: true,
+        usuarioId: true,
+        especialidade: true,
+        verificado: true,
+        disponivel: true,
       },
-    });
-
+    },
+  },
+});
     if (!usuario) {
       return res.status(401).json({
         mensagem: "Usuário não encontrado.",
@@ -61,7 +70,17 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
+function verificarGuia(req, res, next) {
+  if (!req.usuario.guia) {
+    return res.status(403).json({
+      mensagem: "Acesso negado. Apenas guias podem acessar esta rota.",
+    });
+  }
+
+  next();
+}
 module.exports = {
   autenticarUsuario,
   verificarAdmin,
+  verificarGuia,
 };

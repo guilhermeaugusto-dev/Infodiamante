@@ -15,7 +15,32 @@
   padding: 0;
   box-sizing: border-box;
 }
+.avaliacoes-empty {
+  width: 100%;
+  min-height: 240px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 42px 24px;
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.avaliacoes-empty h2 {
+  color: #800020;
+  font-family: Georgia, serif;
+  font-size: 30px;
+  margin: 0 0 10px;
+}
+
+.avaliacoes-empty p {
+  color: #666;
+  margin: 0;
+}
 .avaliacoes-page {
   min-height: 100vh;
   background: #f5f7fb;

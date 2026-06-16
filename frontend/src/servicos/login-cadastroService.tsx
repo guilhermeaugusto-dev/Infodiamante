@@ -1,19 +1,24 @@
 
 
-export function loginUsuario(email: string, senha: string) {
-  return fetch("http://localhost:3000/usuarios/login", {
+export async function loginUsuario(email: string, senha: string) {
+  const response = await fetch("http://localhost:3000/usuarios/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, senha }),
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Erro ao fazer login");
-    }
-
-    return response.json();
+    body: JSON.stringify({
+      email: email.trim(),
+      senha: senha.trim(),
+    }),
   });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.mensagem || data.erro || "Erro ao fazer login");
+  }
+
+  return data;
 }
 export async function cadastrarUsuario(
   nome: string,

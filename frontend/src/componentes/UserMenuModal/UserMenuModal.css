@@ -1,0 +1,139 @@
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botão da foto */
+.user-menu-button {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+
+  border-radius: 50%;
+  border: none;
+  padding: 0 !important;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 0.2s ease;
+}
+
+.user-menu-button:hover {
+  transform: scale(1.05);
+}
+
+/* Imagem do usuário */
+.user-menu-photo {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+
+  border-radius: 50% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+/* Caso não tenha foto */
+.user-menu-initial {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+
+  border-radius: 50%;
+  background: #5b1238;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Modal */
+.user-modal {
+  position: absolute;
+  top: 64px;
+  right: 0;
+  width: 220px;
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  z-index: 9999;
+}
+
+.user-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+}
+
+.user-modal-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #5b1238;
+  color: white;
+  border-radius: 50%;
+  font-size: 18px;
+}
+
+.user-modal-header strong {
+  color: #223a58;
+  font-size: 15px;
+}
+
+.user-modal-header p {
+  margin: 2px 0 0;
+  color: #777;
+  font-size: 12px;
+}
+
+.user-modal-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #223a58;
+  cursor: pointer;
+}
+
+.user-modal-option:hover {
+  background: #f2f2f2;
+}
+
+.user-modal-option.sair {
+  color: #c0392b;
+}
+
+.user-modal-option.sair:hover {
+  background: #fdecea;
+}

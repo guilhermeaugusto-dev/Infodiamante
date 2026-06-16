@@ -1,84 +1,237 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./PontosTuristicos.css";
 import Navbar from "../../componentes/Navbar/navbar";
 import Footer from "../../componentes/Footer/footer";
 import imagemIgreja from "../../templates/igreja-turismo.png";
 
+import {
+  listarPontosTuristicos,
+  buscarPontoTuristicoPorId,
+} from "../../servicos/pontoTuristicoService";
+
+import { useUser } from "../../contexts/UserContext";
+import PontoTuristicoModal from "../../componentes/PontoTuristicoModal/PontoTuristicoModal";
+
+export type PontoTuristico = {
+  id: number;
+  nome: string;
+  descricao: string;
+  endereco?: string | null;
+  cidade: string;
+  estado: string;
+  latitude?: string | number | null;
+  longitude?: string | number | null;
+  imagemUrl?: string | null;
+  ativo?: boolean;
+
+  valorIngresso?: string | number | null;
+  acessivel?: boolean;
+  tipoAcessibilidade?: string | null;
+  observacoesAcessibilidade?: string | null;
+  horarioAbertura?: string | null;
+  horarioFechamento?: string | null;
+
+  categoriaId?: number;
+  regiaoId?: number | null;
+
+  categoria?: {
+    id: number;
+    nome: string;
+    cor?: string | null;
+  } | null;
+
+  regiao?: {
+    id: number;
+    nome: string;
+  } | null;
+
+  avaliacoes?: any[];
+  favoritos?: any[];
+};;
+
 function PontosTuristicos() {
-  const pontos = [
-    {
-      nome: "Igreja de São Francisco",
-      categoria: "Histórico",
-      regiao: "Centro Histórico",
-      nota: "4,9",
-      avaliacoes: "1.240 avaliações",
-      destaque: "Mais visitado",
-      imagem:
-        "https://images.unsplash.com/photo-1567521464027-f127ff144326?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Mirante do Morro Redondo",
-      categoria: "Natureza",
-      regiao: "Zona Sul",
-      nota: "4,8",
-      avaliacoes: "980 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Parque das Acácias",
-      categoria: "Lazer",
-      regiao: "Zona Leste",
-      nota: "4,7",
-      avaliacoes: "756 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Theatro Municipal",
-      categoria: "Cultura",
-      regiao: "Centro",
-      nota: "4,9",
-      avaliacoes: "1.102 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Museu de Arte Moderna",
-      categoria: "Cultura",
-      regiao: "Zona Sul",
-      nota: "4,6",
-      avaliacoes: "642 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Cachoeira do Encanto",
-      categoria: "Natureza",
-      regiao: "Zona Norte",
-      nota: "4,8",
-      avaliacoes: "834 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Mercado Central",
-      categoria: "Gastronomia",
-      regiao: "Centro",
-      nota: "4,7",
-      avaliacoes: "1.536 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80",
-    },
-    {
-      nome: "Lagoa do Sol",
-      categoria: "Lazer",
-      regiao: "Zona Oeste",
-      nota: "4,6",
-      avaliacoes: "712 avaliações",
-      imagem:
-        "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80",
-    },
-  ];
+  const navigate = useNavigate();
+  const { usuario } = useUser();
+
+  const [pontoSelecionado, setPontoSelecionado] =
+    useState<PontoTuristico | null>(null);
+
+  const [carregandoPonto, setCarregandoPonto] = useState(false);
+  const [pontos, setPontos] = useState<PontoTuristico[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+
+  const [busca, setBusca] = useState("");
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("todas");
+  const [regiaoSelecionada, setRegiaoSelecionada] = useState("todas");
+  const [ordenacao, setOrdenacao] = useState("mais-populares");
+
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const itensPorPagina = 8;
+
+  useEffect(() => {
+    async function carregarPontos() {
+      try {
+        const data = await listarPontosTuristicos();
+
+        console.log("Pontos turísticos:", data);
+
+        setPontos(data);
+      } catch (error) {
+        console.log("Erro ao carregar pontos turísticos:", error);
+        setErro("Erro ao carregar pontos turísticos.");
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarPontos();
+  }, []);
+
+  function calcularNota(ponto: PontoTuristico) {
+    const avaliacoes = ponto.avaliacoes || [];
+
+    if (avaliacoes.length === 0) {
+      return 0;
+    }
+
+    const soma = avaliacoes.reduce((total, avaliacao) => {
+      return total + Number(avaliacao.nota || 0);
+    }, 0);
+
+    return soma / avaliacoes.length;
+  }
+
+  function formatarMoeda(valor?: string | number | null) {
+    if (valor === null || valor === undefined || valor === "") {
+      return "Gratuito ou não informado";
+    }
+
+    return Number(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  function formatarHorario(ponto: PontoTuristico) {
+    if (ponto.horarioAbertura && ponto.horarioFechamento) {
+      return `${ponto.horarioAbertura} às ${ponto.horarioFechamento}`;
+    }
+
+    if (ponto.horarioAbertura && !ponto.horarioFechamento) {
+      return `Abre às ${ponto.horarioAbertura}`;
+    }
+
+    if (!ponto.horarioAbertura && ponto.horarioFechamento) {
+      return `Fecha às ${ponto.horarioFechamento}`;
+    }
+
+    return "Horário não informado";
+  }
+
+  async function abrirDetalhesPonto(id: number) {
+    try {
+      setCarregandoPonto(true);
+
+      const pontoCompleto = await buscarPontoTuristicoPorId(id);
+
+      setPontoSelecionado(pontoCompleto);
+    } catch (error) {
+      console.log("Erro ao buscar detalhes do ponto:", error);
+    } finally {
+      setCarregandoPonto(false);
+    }
+  }
+
+  const categorias = useMemo(() => {
+    const lista = pontos
+      .map((ponto) => ponto.categoria?.nome)
+      .filter(Boolean) as string[];
+
+    return Array.from(new Set(lista));
+  }, [pontos]);
+
+  const regioes = useMemo(() => {
+    const lista = pontos
+      .map((ponto) => ponto.regiao?.nome || ponto.cidade)
+      .filter(Boolean) as string[];
+
+    return Array.from(new Set(lista));
+  }, [pontos]);
+
+  const pontosFiltrados = useMemo(() => {
+    let resultado = [...pontos];
+
+    if (busca.trim()) {
+      const termo = busca.toLowerCase().trim();
+
+      resultado = resultado.filter((ponto) => {
+        return (
+          ponto.nome.toLowerCase().includes(termo) ||
+          ponto.descricao.toLowerCase().includes(termo) ||
+          ponto.cidade.toLowerCase().includes(termo)
+        );
+      });
+    }
+
+    if (categoriaSelecionada !== "todas") {
+      resultado = resultado.filter(
+        (ponto) => ponto.categoria?.nome === categoriaSelecionada
+      );
+    }
+
+    if (regiaoSelecionada !== "todas") {
+      resultado = resultado.filter((ponto) => {
+        const regiao = ponto.regiao?.nome || ponto.cidade;
+        return regiao === regiaoSelecionada;
+      });
+    }
+
+    if (ordenacao === "melhor-avaliados") {
+      resultado.sort((a, b) => calcularNota(b) - calcularNota(a));
+    }
+
+    if (ordenacao === "mais-populares") {
+      resultado.sort(
+        (a, b) => (b.favoritos?.length || 0) - (a.favoritos?.length || 0)
+      );
+    }
+
+    if (ordenacao === "nome") {
+      resultado.sort((a, b) => a.nome.localeCompare(b.nome));
+    }
+
+    return resultado;
+  }, [pontos, busca, categoriaSelecionada, regiaoSelecionada, ordenacao]);
+
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [busca, categoriaSelecionada, regiaoSelecionada, ordenacao]);
+
+  const totalPaginas = Math.ceil(pontosFiltrados.length / itensPorPagina);
+
+  const indiceInicial = (paginaAtual - 1) * itensPorPagina;
+  const indiceFinal = indiceInicial + itensPorPagina;
+
+  const pontosPaginados = pontosFiltrados.slice(indiceInicial, indiceFinal);
+
+  function mudarPagina(pagina: number) {
+    const token = localStorage.getItem("token");
+
+    if (pagina > 1 && (!token || !usuario)) {
+      navigate("/");
+      return;
+    }
+
+    if (pagina < 1 || pagina > totalPaginas) {
+      return;
+    }
+
+    setPaginaAtual(pagina);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   return (
     <div className="pontos-page">
@@ -94,101 +247,212 @@ function PontosTuristicos() {
             </p>
           </div>
 
-       <div className="hero-decoration">
-  <img
-    src={imagemIgreja}
-    alt="Ilustração de igreja"
-    className="church-hero-image"
-  />
-</div>
+          <div className="hero-decoration">
+            <img
+              src={imagemIgreja}
+              alt="Ilustração de igreja"
+              className="church-hero-image"
+            />
+          </div>
         </section>
 
         <section className="search-card">
           <div className="search-input">
             <span>🔍</span>
-            <input type="text" placeholder="Buscar por nome do lugar..." />
+            <input
+              type="text"
+              placeholder="Buscar por nome do lugar..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
           </div>
 
           <div className="filter-box">
             <label>Categoria</label>
-            <select>
-              <option>Todas as categorias</option>
-              <option>Histórico</option>
-              <option>Natureza</option>
-              <option>Cultura</option>
-              <option>Gastronomia</option>
-              <option>Lazer</option>
+            <select
+              value={categoriaSelecionada}
+              onChange={(e) => setCategoriaSelecionada(e.target.value)}
+            >
+              <option value="todas">Todas as categorias</option>
+
+              {categorias.map((categoria) => (
+                <option key={categoria} value={categoria}>
+                  {categoria}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="filter-box">
             <label>Região</label>
-            <select>
-              <option>Todas as regiões</option>
-              <option>Centro</option>
-              <option>Zona Norte</option>
-              <option>Zona Sul</option>
-              <option>Zona Leste</option>
-              <option>Zona Oeste</option>
+            <select
+              value={regiaoSelecionada}
+              onChange={(e) => setRegiaoSelecionada(e.target.value)}
+            >
+              <option value="todas">Todas as regiões</option>
+
+              {regioes.map((regiao) => (
+                <option key={regiao} value={regiao}>
+                  {regiao}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="filter-box">
             <label>Ordenar por</label>
-            <select>
-              <option>Mais populares</option>
-              <option>Melhor avaliados</option>
-              <option>Mais próximos</option>
+            <select
+              value={ordenacao}
+              onChange={(e) => setOrdenacao(e.target.value)}
+            >
+              <option value="mais-populares">Mais populares</option>
+              <option value="melhor-avaliados">Melhor avaliados</option>
+              <option value="nome">Nome A-Z</option>
             </select>
           </div>
 
-          <button className="search-button">🔍 Buscar</button>
+          <button type="button" className="search-button">
+            🔍 Buscar
+          </button>
         </section>
 
-        <section className="cards-grid">
-          {pontos.map((ponto) => (
-            <article className="ponto-card" key={ponto.nome}>
-              <div className="card-image">
-                <img src={ponto.imagem} alt={ponto.nome} />
+        {carregando ? (
+          <div className="pontos-empty">
+            <h2>Carregando pontos turísticos...</h2>
+          </div>
+        ) : erro ? (
+          <div className="pontos-empty">
+            <h2>{erro}</h2>
+          </div>
+        ) : pontosFiltrados.length === 0 ? (
+          <div className="pontos-empty">
+            <h2>Nenhum ponto turístico encontrado</h2>
+            <p>Tente alterar os filtros ou buscar por outro nome.</p>
+          </div>
+        ) : (
+          <section className="cards-grid">
+            {pontosPaginados.map((ponto) => (
+              <article
+                className="ponto-card"
+                key={ponto.id}
+                onClick={() => abrirDetalhesPonto(ponto.id)}
+              >
+                <div className="card-image">
+                  <img
+                    src={
+                      ponto.imagemUrl ||
+                      "https://images.unsplash.com/photo-1548115184-bfa201b1a7ab?auto=format&fit=crop&w=600&q=80"
+                    }
+                    alt={ponto.nome}
+                  />
 
-                {ponto.destaque && (
-                  <span className="featured-badge">{ponto.destaque}</span>
-                )}
+                  <span className="featured-badge">
+                    {ponto.categoria?.nome || "Turismo"}
+                  </span>
 
-                <button className="favorite-button">♡</button>
-              </div>
-
-              <div className="card-content">
-                <h2>{ponto.nome}</h2>
-
-                <span
-                  className={`category-tag ${ponto.categoria
-                    .toLowerCase()
-                    .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "")}`}
-                >
-                  {ponto.categoria}
-                </span>
-
-                <div className="card-footer">
-                  <span>📍 {ponto.regiao}</span>
-                  <strong>⭐ {ponto.nota}</strong>
-                  <small>({ponto.avaliacoes})</small>
+                  <button
+                    type="button"
+                    className="favorite-button"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    ♡
+                  </button>
                 </div>
-              </div>
-            </article>
-          ))}
-        </section>
 
-        <div className="pagination">
-          <button>«</button>
-          <button className="active-page">1</button>
-          <button>2</button>
-          <button>3</button>
-          <span>...</span>
-          <button>8</button>
-          <button>»</button>
-        </div>
+                <div className="card-content">
+                  <h2>{ponto.nome}</h2>
+
+                  <span
+                    className={`category-tag ${
+                      ponto.categoria?.nome
+                        ?.toLowerCase()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "") || "turismo"
+                    }`}
+                  >
+                    {ponto.categoria?.nome || "Turismo"}
+                  </span>
+
+                  <p className="ponto-descricao">
+                    {ponto.descricao.length > 90
+                      ? `${ponto.descricao.substring(0, 90)}...`
+                      : ponto.descricao}
+                  </p>
+
+                  <div className="ponto-extra-info">
+                    <span>💰 {formatarMoeda(ponto.valorIngresso)}</span>
+
+                    <span>🕒 {formatarHorario(ponto)}</span>
+
+                    <span
+                      className={
+                        ponto.acessivel ? "acessivel-sim" : "acessivel-nao"
+                      }
+                    >
+                      ♿ {ponto.acessivel ? "Acessível" : "Não acessível"}
+                    </span>
+                  </div>
+
+                  <div className="card-footer">
+                    <span>
+                      📍 {ponto.regiao?.nome || ponto.cidade || "Local"}
+                    </span>
+
+                    <strong>⭐ {calcularNota(ponto).toFixed(1)}</strong>
+
+                    <small>({ponto.avaliacoes?.length || 0})</small>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </section>
+        )}
+
+        {pontosFiltrados.length > 0 && (
+          <div className="pagination">
+            <button
+              type="button"
+              disabled={paginaAtual === 1}
+              onClick={() => mudarPagina(paginaAtual - 1)}
+            >
+              «
+            </button>
+
+            {Array.from({ length: totalPaginas }).map((_, index) => {
+              const numeroPagina = index + 1;
+
+              return (
+                <button
+                  key={numeroPagina}
+                  type="button"
+                  className={paginaAtual === numeroPagina ? "active-page" : ""}
+                  onClick={() => mudarPagina(numeroPagina)}
+                >
+                  {numeroPagina}
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              disabled={paginaAtual === totalPaginas}
+              onClick={() => mudarPagina(paginaAtual + 1)}
+            >
+              »
+            </button>
+          </div>
+        )}
+
+        {carregandoPonto && (
+          <div className="pontos-loading-modal">
+            <div>Carregando detalhes...</div>
+          </div>
+        )}
+
+        <PontoTuristicoModal
+          ponto={pontoSelecionado}
+          onFechar={() => setPontoSelecionado(null)}
+        />
       </main>
 
       <Footer />

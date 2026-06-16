@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Login.css";
+import { useUser } from "../../contexts/UserContext";
 
 import {
   google,
@@ -15,28 +16,33 @@ import {
 
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
-import { Link } from "react-router-dom";
-import { loginUsuario } from "../../servicos/login-cadastro";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUsuario } from "../../servicos/login-cadastroService";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
+  const { setUsuario, salvarUsuario } = useUser();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
     async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     try {
-    
       const data = await loginUsuario(email, senha);
       localStorage.setItem("token", data.token);
+      salvarUsuario(data.usuario);
+      console.log("Token recebido:", data.fotoUrl);
+      setUsuario(data.usuario);
+      navigate("/pontos-turisticos");
     
-      console.log("Login realizado com sucesso:", data);
+   
     } catch (error) {
       console.log("Erro ao fazer login:", error);
+      alert(error instanceof Error ? error.message : "Erro desconhecido");
+
     }
   }
-
   return (
     <div className="login-page">
       <Navbar />
@@ -169,10 +175,10 @@ function Login() {
               <a href="#">Esqueci minha senha</a>
             </div>
 
-    <button type="button" className="submit-btn"> 
-                <span>➜</span>
-              Entrar
-            </button>
+      <button type="submit" className="submit-btn"> 
+                  <span>➜</span>
+                Entrar
+              </button>
 
             <div className="divider">
               <span></span>

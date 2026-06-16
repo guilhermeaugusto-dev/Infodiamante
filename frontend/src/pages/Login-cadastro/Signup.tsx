@@ -4,7 +4,7 @@ import { google, facebook, usuario, tranca, olho, olhoSemTranca } from "../../as
 import Footer from "../../componentes/Footer/footer";
 import Navbar from "../../componentes/Navbar/navbar";
 import { Link } from "react-router-dom";
-import { cadastrarUsuario } from "../../servicos/login-cadastro";
+import { cadastrarUsuario } from "../../servicos/login-cadastroService";
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +27,7 @@ async function handleCadastro(event: React.FormEvent<HTMLFormElement>) {
 
     console.log("Usuário cadastrado:", data);
     alert("Conta criada com sucesso!");
-    window.location.href = "/pontos-turisticos";
+    window.location.href = "/";
   } catch (error) {
     if (error instanceof Error) {
       console.log("Erro ao cadastrar usuário:", error.message);
