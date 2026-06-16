@@ -37,6 +37,7 @@ function Navbar() {
         <NavLink to="/guias">Guias</NavLink>
         <NavLink to="/seja-parceiro">Seja Parceiro</NavLink>
         <NavLink to="/seja-guia">Seja um Guia</NavLink>
+        <NavLink to="/avaliacoes">Avaliações</NavLink>
 
       </nav>
 

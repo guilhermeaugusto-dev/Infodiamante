@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import L from "leaflet";
-import { Save, X } from "lucide-react";
+import { Save, X, MapPinned } from "lucide-react";
 
 import Navbar from "../../componentes/Navbar/navbar";
 import Footer from "../../componentes/Footer/footer";
@@ -212,6 +212,67 @@ function MapaRoteiro() {
     setMensagem("");
     setEtapa(4);
   }
+function abrirRotaGoogleMaps() {
+  if (pontosSelecionados.length === 0) {
+    setMensagem("Selecione pelo menos um ponto turístico.");
+    return;
+  }
+
+  const pontosValidos = pontosSelecionados.filter((ponto) => {
+    const latitude = Number(ponto.latitude);
+    const longitude = Number(ponto.longitude);
+
+    return (
+      ponto.latitude !== null &&
+      ponto.latitude !== undefined &&
+      ponto.longitude !== null &&
+      ponto.longitude !== undefined &&
+      !Number.isNaN(latitude) &&
+      !Number.isNaN(longitude)
+    );
+  });
+
+  if (pontosValidos.length === 0) {
+    setMensagem("Nenhum ponto selecionado possui latitude e longitude válidas.");
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    setMensagem("Seu navegador não permite pegar sua localização atual.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const minhaLatitude = position.coords.latitude;
+      const minhaLongitude = position.coords.longitude;
+
+      const origem = `${minhaLatitude},${minhaLongitude}`;
+
+      const ultimoPonto = pontosValidos[pontosValidos.length - 1];
+
+      const destino = `${Number(ultimoPonto.latitude)},${Number(
+        ultimoPonto.longitude
+      )}`;
+
+      const pontosIntermediarios = pontosValidos
+        .slice(0, -1)
+        .map((ponto) => `${Number(ponto.latitude)},${Number(ponto.longitude)}`)
+        .join("|");
+
+      let url = `https://www.google.com/maps/dir/?api=1&origin=${origem}&destination=${destino}&travelmode=driving`;
+
+      if (pontosIntermediarios) {
+        url += `&waypoints=${encodeURIComponent(pontosIntermediarios)}`;
+      }
+
+      window.open(url, "_blank");
+    },
+    () => {
+      setMensagem("Não foi possível pegar sua localização atual. Permita o acesso à localização.");
+    }
+  );
+}
 
   async function salvarRoteiro() {
     if (pontosSelecionados.length === 0) {
@@ -398,6 +459,15 @@ function MapaRoteiro() {
                 <button
                   type="button"
                   className="mapa-salvar-button"
+                  onClick={abrirRotaGoogleMaps}
+                >
+                  <MapPinned size={18} />
+                  Abrir no Google Maps
+                </button>
+
+                <button
+                  type="button"
+                  className="mapa-salvar-button"
                   onClick={irParaDetalhes}
                 >
                   Continuar para detalhes
@@ -568,6 +638,11 @@ function MapaRoteiro() {
             <div className="continue-area">
               <button type="button" onClick={() => setEtapa(3)}>
                 Voltar
+              </button>
+
+              <button type="button" onClick={abrirRotaGoogleMaps}>
+                <MapPinned size={18} />
+                Abrir rota no Google Maps
               </button>
 
               <button
